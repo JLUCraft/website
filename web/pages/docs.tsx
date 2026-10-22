@@ -150,7 +150,7 @@ export function DocsPage() {
           ))}
         </ul>
         <Callout>
-          {t("部署与运维说明在各仓库内，接口条款以 MUA 官方文档为准。")}{" "}
+          {t("部署与运维文档由各校负责人持有，接口条款以 MUA 官方文档为准。")}{" "}
           <ExternalLink href={SITE.mua.docs}>{t("MUA 官方文档")}</ExternalLink>
         </Callout>
       </Section>
