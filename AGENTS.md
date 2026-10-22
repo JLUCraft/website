@@ -45,8 +45,16 @@ bun run build && bunx vite preview --port 4173
 bunx playwright@latest screenshot --browser chromium --full-page --color-scheme dark http://127.0.0.1:4173/ /tmp/home-dark.png
 ```
 
-## 5. 部署
+## 5. 部署（GitHub Pages + 自定义域名）
 
-`bun run build` 产出 `dist/`：`dist/index.html`、`dist/docs/index.html`、`dist/jlmua/index.html` 与哈希化的
-`dist/assets/`。反代只需把 `dist/` 当静态目录，`/docs/`、`/jlmua/` 是目录入口而不是前端路由，
-不需要 SPA 回退。nginx 配置与验收命令见 `docs/deployment.md`（本地文档，不在仓库里）。
+发布物只有 `dist/`，托管在 GitHub Pages，域名解析走 Cloudflare。
+
+- 仓库设置 → Pages → Source 必须选 **GitHub Actions**（不是「分支 + 目录」）。
+  `.github/workflows/deploy.yml` 在 `main` 上依次构建、测试、上传 `dist/`、部署。
+- 自定义域名由 `web/public/CNAME` 提供（`www.jlucraft.com`），构建时复制进 `dist/`。
+  换域名要同时改 `web/site.ts` 的 `origin` 和这个文件，测试会校验两处一致。
+- `web/public/.nojekyll` 让 Pages 跳过 Jekyll 处理，否则下划线开头的产物会被过滤。
+- `vite.config.ts` 的 `base` 必须是 `/`：`/`、`/docs/`、`/jlmua/` 是真实目录入口，
+  不是前端路由，既不需要 404 回退，也不能用相对 `base`。
+- 本地预览生产产物：`bun run build && bunx vite preview --port 4173`。
+  Cloudflare DNS 与证书的具体步骤见 `docs/deployment.md` §12（本地文档，不入库）。
