@@ -20,11 +20,11 @@ description: protobuf（prost）是唯一权威的 schema，需要审计的治�
 
 ## 消息家族
 
-- **目录**：`DirectoryRequest` / `DirectoryResponse` / `ServiceRecord` —— 客户端如何找到可用服务
-- **会话**：`OpenRequest` / `OpenResponse` / `GameSession` / `RoomMetadata` —— 打开与描述游戏会话
-- **操作**：`OpsRequest` / `OpsResponse` / `OpsInstance` —— 托管实例的查询与控制
-- **LLM 网关**：`LlmRequest` / `LlmFrame` / `LlmUsage` —— 办公与智能体能力
-- **日志**：`Cid`、`IpldLink` 等内容寻址类型
+- **目录**（`DirectoryRequest` / `DirectoryResponse` / `ServiceRecord`）：查询与下发可用服务列表
+- **会话**（`OpenRequest` / `OpenResponse` / `GameSession` / `RoomMetadata`）：建立与描述游戏会话
+- **操作**（`OpsRequest` / `OpsResponse` / `OpsInstance`）：托管实例的状态查询与启停控制
+- **LLM 网关**（`LlmRequest` / `LlmFrame` / `LlmUsage`）：办公与智能体调用请求及用量统计
+- **日志**（`Cid` / `IpldLink`）：内容寻址与哈希链引用类型
 
 ## 错误处理
 

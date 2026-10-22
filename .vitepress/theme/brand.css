@@ -60,14 +60,6 @@
   --vp-code-color: var(--primary-text);
   --vp-code-bg: var(--surface-alt);
   --vp-code-line-highlight-color: var(--line);
-
-  /* 首页标题的渐变取自品牌色阶 */
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(
-    120deg,
-    var(--brand-700) 20%,
-    var(--brand-400)
-  );
 }
 
 /* 形状与交互细节跟随令牌，让四个前端手感一致。
@@ -106,12 +98,6 @@
 .VPBadge.danger {
   background: var(--error-bg);
   color: var(--error);
-}
-
-/* 首页功能卡：圆角与分隔线用令牌，避免和主题默认的 12px 混用 */
-.VPFeature {
-  border-radius: var(--radius-lg);
-  border-color: var(--line);
 }
 
 /* ===== 落地页 =====
@@ -216,18 +202,18 @@
 .lp-eyebrow {
   margin: 0 0 var(--space-8);
   color: var(--muted);
-  font-size: var(--text-sm);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: 0.04em;
 }
 
 .lp-title {
   margin: 0 0 var(--space-16);
   color: var(--ink);
-  font-size: clamp(40px, 7vw, 72px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-size: clamp(40px, 7vw, 68px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 .lp-lead {
@@ -289,22 +275,11 @@
   background: var(--surface);
 }
 
-/* 卡片左上角的小方块：Minecraft 式的立体色块，纯 CSS */
-.lp-card::before {
-  content: "";
-  display: block;
-  width: var(--space-24);
-  height: var(--space-24);
-  margin-bottom: var(--space-12);
-  border-radius: 3px;
-  background: var(--brand-500);
-  box-shadow: inset calc(var(--space-6) * -1) calc(var(--space-6) * -1) 0 var(--brand-800);
-}
-
-.lp-card-title {
+.lp-card h3 {
   margin: 0 0 var(--space-8);
   color: var(--ink);
   font-size: var(--text-lg);
+  font-weight: 600;
 }
 
 .lp-card p {
@@ -320,8 +295,9 @@
 
 .lp-section-title {
   margin: 0 0 var(--space-16);
-  color: var(--muted);
+  color: var(--ink);
   font-size: var(--text-xl);
+  font-weight: 600;
 }
 
 .lp-steps ol {
@@ -341,8 +317,8 @@
   counter-increment: step;
 }
 
-/* 序号用绝对定位而不是 flex：紧凑列表里 li 的内容是纯行内节点，
-   用 flex 会把文字、链接拆成多个 flex item，窄屏上会被掰成竖条。 */
+/* 序号用绝对定位：紧凑列表里 li 的内容是纯行内节点，
+   flex 布局会把文字、链接拆成多个子项。 */
 .lp-steps li::before {
   content: counter(step);
   position: absolute;

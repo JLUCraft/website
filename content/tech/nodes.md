@@ -38,8 +38,7 @@ description: federated-server 单进程承担身份、目录、中继、赛事�
 
 ## 启动自检
 
-`federated-server check` 会读取配置并校验日志、密钥与域设置。
-三种常见网络环境的配置写法见部署文档；自检通过再启动，避免带病上线。
+启动服务前先执行 `federated-server check`，校验配置文件、日志目录、密钥与域设置是否完整一致。
 
 ## 多机部署
 

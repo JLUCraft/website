@@ -1,6 +1,6 @@
 ---
 title: 总体架构
-description: 同好会与联盟的基础设施分成共享库、服务、客户端三层，以及各组件职责与主要数据流。
+description: 同好会与联盟的基础设施分层、核心仓库职责与登录进服数据流。
 ---
 
 # 总体架构
@@ -9,7 +9,7 @@ description: 同好会与联盟的基础设施分成共享库、服务、客户�
 
 | 层 | 组件 | 职责 |
 | --- | --- | --- |
-| 共享库 | [union-core](https://github.com/JLUCraft/union-core) | 协议、身份、状态、日志、联赛、节点、权威、客户端库，以及办公（events/flows）与 LLM 网关 |
+| 共享库 | [union-core](https://github.com/JLUCraft/union-core) | 协议、身份、状态、日志、联赛、节点、权威、客户端、办公（events/flows）与 LLM 网关 |
 | 服务 | [federated-skinstation](https://github.com/JLUCraft/federated-skinstation) | 账号、Yggdrasil 认证、材质、皮肤库、MUA 成员接口 |
 | 服务 | [federated-server](https://github.com/JLUCraft/federated-server) | 单进程多角色：身份、目录、中继、赛事网关、成员房间、托管游戏服务端 |
 | 客户端 | [FollyLauncher](https://github.com/JLUCraft/FollyLauncher) | 玩家入口：登录、材质、实例管理、本地回环代理 |
@@ -39,7 +39,7 @@ description: 同好会与联盟的基础设施分成共享库、服务、客户�
 3. **服务发现**：客户端向联邦服务器请求目录（`DirectoryRequest`），拿到可用的服务记录。
 4. **跨校互通**：省联盟内的请求由皮肤站与联邦服务器处理；出省走全国 MUA 规范的成员接口。
 
-## 继续看
+## 核心模块
 
 - [身份与设备](/tech/identity)
 - [协议与编码](/tech/protocol)

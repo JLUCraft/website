@@ -32,7 +32,7 @@ export const SITE = {
   },
   /** 首页的搜索描述，也用作站点默认描述。 */
   description:
-    "吉林大学 Minecraft 同好会：一个账号走遍同好会服务器、吉林省高校联盟与全国高校联盟。",
+    "吉林大学 Minecraft 同好会：学校邮箱注册，同好会服务器与省联盟互通共用同一套身份。",
 } as const;
 
 export const PAGES = {

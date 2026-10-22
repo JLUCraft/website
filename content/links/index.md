@@ -1,6 +1,6 @@
 ---
 title: 友情链接
-description: 高校社团、联盟、上游项目与同好会代码仓库的入口。
+description: 同好会社区群、省与全国高校联盟、各高校 Minecraft 社团站点的入口。
 ---
 
 # 友情链接
@@ -25,19 +25,3 @@ description: 高校社团、联盟、上游项目与同好会代码仓库的入�
 | --- | --- | --- |
 | SJMC · 上海交通大学 Minecraft 社 | [mc.sjtu.cn](https://mc.sjtu.cn/) · [Wiki](https://mc.sjtu.cn/wiki/) | FollyLauncher 上游 SJMCL 的来源；站点含 Wiki 与服务器列表 |
 | NUIST Craft · 南京信息工程大学 | [nuistcraft.com](https://www.nuistcraft.com/) | 原版生存与生电向；站点含整合包说明、网页地图与状态监控 |
-
-## 上游项目
-
-| 项目 | 说明 |
-| --- | --- |
-| [SJMCL](https://github.com/UNIkeEN/SJMCL) | FollyLauncher 的上游启动器，同好会的 fork 从它同步功能 |
-
-## 代码
-
-同好会的系统都在 [GitHub 的 JLUCraft 组织](https://github.com/JLUCraft) 下：
-[皮肤站](https://github.com/JLUCraft/federated-skinstation)、
-[联邦服务器](https://github.com/JLUCraft/federated-server)、
-[协议与身份库](https://github.com/JLUCraft/union-core)、
-[启动器](https://github.com/JLUCraft/FollyLauncher)、
-[管理端](https://github.com/JLUCraft/union-manager)、
-[校徽取色](https://github.com/JLUCraft/brand-palette)。
