@@ -1,8 +1,10 @@
 /**
  * 站点唯一的外部地址清单与页面路径。
  *
- * 导航、首页按钮、页脚从 TS 取；Markdown 正文里的外链直接写地址（内容就是内容），
- * 但 test/content.test.ts 会限制它们只能指向允许的域名。
+ * 名词约定（不要在页面里混用）：
+ * - JLUCraft：吉林大学 Minecraft 同好会（校级社团）
+ * - JLMUA：吉林省 MC 高校联盟（省级联盟）
+ * - MUA：全国 MC 高校联盟（国家级联盟）
  */
 
 export const SITE = {
@@ -17,18 +19,22 @@ export const SITE = {
     "union-core": "https://github.com/JLUCraft/union-core",
     "union-manager": "https://github.com/JLUCraft/union-manager",
     "brand-palette": "https://github.com/JLUCraft/brand-palette",
+    "minecraftd": "https://github.com/JLUCraft/minecraftd",
+    "paper-scoring": "https://github.com/JLUCraft/paper-scoring-template",
   },
   mua: {
     docs: "https://docs.mualliance.cn/dev/union",
+    site: "https://www.mualliance.cn/",
   },
   /** 首页的搜索描述，也用作站点默认描述。 */
   description:
-    "用学校邮箱注册一次，登录全省共用的皮肤站、进入各校的联邦服务器，并与全国 MUA 互通。",
+    "吉林大学 Minecraft 同好会：一个账号走遍同好会服务器、吉林省高校联盟与全国高校联盟。",
 } as const;
 
 export const PAGES = {
   home: "/",
   docs: "/docs/",
+  tech: "/tech/",
   jlmua: "/jlmua/",
 } as const;
 
@@ -39,6 +45,8 @@ export const ALLOWED_EXTERNAL_HOSTS = [
   "skin.jlucraft.com",
   "github.com",
   "docs.mualliance.cn",
+  "www.mualliance.cn",
+  "mc.sjtu.cn",
 ] as const;
 
 /**
