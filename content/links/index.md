@@ -1,6 +1,6 @@
 ---
 title: 友情链接
-description: 高校联盟、上游项目与社团站点的入口，以及同好会系统在 GitHub 上的代码仓库。
+description: 高校社团、联盟、上游项目与同好会代码仓库的入口。
 ---
 
 # 友情链接
@@ -19,12 +19,18 @@ description: 高校联盟、上游项目与社团站点的入口，以及同好�
 | [全国 MC 高校联盟（MUA）](https://www.mualliance.cn/) | 国家级联盟，跨省互通按它的规范执行 |
 | [MUA 开发文档](https://docs.mualliance.cn/dev/union) | 成员站接口、联合认证与材质同步 |
 
+## 高校社团
+
+| 社团 | 站点 | 说明 |
+| --- | --- | --- |
+| SJMC · 上海交通大学 Minecraft 社 | [mc.sjtu.cn](https://mc.sjtu.cn/) · [Wiki](https://mc.sjtu.cn/wiki/) | FollyLauncher 上游 SJMCL 的来源；站点含 Wiki 与服务器列表 |
+| NUIST Craft · 南京信息工程大学 | [nuistcraft.com](https://www.nuistcraft.com/) | 原版生存与生电向；站点含整合包说明、网页地图与状态监控 |
+
 ## 上游项目
 
 | 项目 | 说明 |
 | --- | --- |
-| [SJMC · 上海交通大学 Minecraft 社](https://mc.sjtu.cn/) | FollyLauncher 上游 SJMCL 的社团站点与 Wiki |
-| [SJMC Wiki](https://mc.sjtu.cn/wiki/) | 启动器与服务器的中文文档 |
+| [SJMCL](https://github.com/UNIkeEN/SJMCL) | FollyLauncher 的上游启动器，同好会的 fork 从它同步功能 |
 
 ## 代码
 

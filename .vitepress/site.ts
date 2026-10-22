@@ -51,6 +51,7 @@ export const ALLOWED_EXTERNAL_HOSTS = [
   "docs.mualliance.cn",
   "www.mualliance.cn",
   "mc.sjtu.cn",
+  "www.nuistcraft.com",
 ] as const;
 
 /**
