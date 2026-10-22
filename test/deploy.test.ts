@@ -57,26 +57,26 @@ test("hidden 文件进产物：否则 .nojekyll 会被静默丢掉", () => {
   assert.match(step, /path:\s*dist/);
 });
 
-test("所有 action 都是当前最新的大版本", () => {
-  // 升级时同步改这里：这几条是人工核对过的当前最新 major。
-  const expected = [
-    ["actions/checkout", "v7"],
-    ["oven-sh/setup-bun", "v2"],
-    ["actions/configure-pages", "v6"],
-    ["actions/upload-pages-artifact", "v5"],
-    ["actions/deploy-pages", "v5"],
-  ] as const;
-  for (const [action, version] of expected) {
+// 版本下限：Dependabot 负责往上提，这里只拦住回退到已知有问题的旧版本。
+const ACTION_FLOOR: Record<string, number> = {
+  "actions/checkout": 7,
+  "oven-sh/setup-bun": 2,
+  "actions/configure-pages": 6,
+  "actions/upload-pages-artifact": 5,
+  "actions/deploy-pages": 5,
+};
+
+test("工作流只用登记的 action，且版本不低于下限", () => {
+  const refs = [...WORKFLOW.matchAll(/uses:\s*(\S+)/g)].map((m) => m[1]);
+  assert.ok(refs.length >= 5);
+  for (const ref of refs) {
+    const match = /^([^@]+)@v(\d+)$/.exec(ref);
+    assert.ok(match, `action 必须用大版本标签：${ref}`);
+    const [, name, major] = match;
+    assert.ok(name in ACTION_FLOOR, `未登记的 action：${name}`);
     assert.ok(
-      WORKFLOW.includes(`${action}@${version}`),
-      `${action} 应为 @${version}`,
-    );
-  }
-  const used = [...WORKFLOW.matchAll(/uses:\s*(\S+)/g)].map((m) => m[1]);
-  for (const ref of used) {
-    assert.ok(
-      expected.some(([action, version]) => ref === `${action}@${version}`),
-      `工作流里出现了未登记版本的 action：${ref}`,
+      Number(major) >= ACTION_FLOOR[name],
+      `${name} 低于下限 v${ACTION_FLOOR[name]}（当前 ${ref}）`,
     );
   }
 });
