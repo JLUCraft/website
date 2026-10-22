@@ -26,6 +26,10 @@ export const SITE = {
     docs: "https://docs.mualliance.cn/dev/union",
     site: "https://www.mualliance.cn/",
   },
+  community: {
+    /** QQ 群号：文案里出现群号的地方都用这一个值。 */
+    qqGroup: "361033103",
+  },
   /** 首页的搜索描述，也用作站点默认描述。 */
   description:
     "吉林大学 Minecraft 同好会：一个账号走遍同好会服务器、吉林省高校联盟与全国高校联盟。",

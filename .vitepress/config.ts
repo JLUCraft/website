@@ -112,7 +112,10 @@ export default defineConfig({
     langMenuLabel: "语言",
     externalLinkIcon: true,
     footer: {
-      message: "吉林大学 Minecraft 同好会",
+      message:
+        "吉林大学 Minecraft 同好会 · QQ 群 " +
+        SITE.community.qqGroup +
+        ' · <a href="/privacy/">隐私声明</a>',
       copyright: "JLUCraft",
     },
     search: {

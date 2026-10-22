@@ -54,6 +54,7 @@ test("必需的页面都在", () => {
     "index.md",
     "about/index.md",
     "links/index.md",
+    "privacy/index.md",
     "docs/index.md",
     "docs/register.md",
     "docs/launcher.md",
@@ -237,6 +238,29 @@ test("文案没有防御式措辞与元表述", () => {
     }
   }
   assert.deepEqual(offenders, [], `这些地方要改成直接陈述：\n${offenders.join("\n")}`);
+});
+
+test("QQ 群号全站一致，且来自 site.ts", () => {
+  const expected = SITE.community.qqGroup;
+  const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
+  assert.ok(config.includes("SITE.community.qqGroup"), "页脚应引用 site.ts 里的群号");
+
+  const found: string[] = [];
+  for (const file of FILES) {
+    for (const match of read(file).matchAll(/QQ\s*群\s*[:：]?\s*(\d{6,12})/g)) {
+      found.push(`${file}: ${match[1]}`);
+      assert.equal(match[1], expected, `${file} 里的群号与 site.ts 不一致`);
+    }
+  }
+  assert.ok(found.length >= 2, `群号至少出现在关于页与隐私声明：${found.join(", ")}`);
+});
+
+test("隐私声明覆盖数据、共享、保留与删除", () => {
+  const privacy = read("privacy/index.md");
+  for (const topic of ["学校邮箱", "身份日志", "全国 MUA", "保留", "删除账号", "Cookie"]) {
+    assert.ok(privacy.includes(topic), `隐私声明缺少「${topic}」`);
+  }
+  assert.ok(privacy.includes(SITE.community.qqGroup), "隐私声明缺少联系方式");
 });
 
 test("三个名词各就各位", () => {

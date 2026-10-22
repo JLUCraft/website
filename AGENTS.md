@@ -9,7 +9,7 @@ VitePress 静态站点，正文用 Markdown 写。
   - `index.md` 首页，`about/index.md` 关于同好会，`links/index.md` 友情链接
   - `docs/*.md` 玩家文档（注册、启动器、进服、服务器、皮肤、问题）
   - `tech/*.md` 技术文档（架构、身份、协议、节点、网络、皮肤站、客户端、赛事、办公、部署、品牌）
-  - `jlmua/index.md` 吉林省 MC 高校联盟
+  - `jlmua/index.md` 吉林省 MC 高校联盟，`privacy/index.md` 隐私声明
 - `.vitepress/config.ts`：导航、侧边栏、站点元信息、Markdown 扩展。
 - `.vitepress/site.ts`：**站外地址与页面路径的唯一来源**，导航与测试都从这里读。
 - `.vitepress/theme/`：`tokens.css`（生成物）+ `brand.css`（VitePress 变量映射 + 落地页版式）。
