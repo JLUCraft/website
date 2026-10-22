@@ -115,7 +115,7 @@ export default defineConfig({
       message:
         "吉林大学 Minecraft 同好会 · QQ 群 " +
         SITE.community.qqGroup +
-        ' · <a href="/privacy/">隐私声明</a>',
+        ' · <a href="/links/">友情链接</a> · <a href="/privacy/">隐私声明</a>',
       copyright: "JLUCraft",
     },
     search: {

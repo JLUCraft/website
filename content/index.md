@@ -57,4 +57,6 @@ description: 吉林大学 Minecraft 同好会：一个账号走遍同好会服�
 [**技术文档** 同好会与联盟背后的架构、协议、组件与运维方式。](/tech/){ .lp-service }
 
 [**JLMUA** 吉林省 MC 高校联盟：成员高校、加入方式，以及和全国 MUA 的关系。](/jlmua/){ .lp-service }
+
+[**友情链接** 社区群、联盟、上游项目与代码仓库。](/links/){ .lp-service }
 :::
