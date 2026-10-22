@@ -1,114 +1,185 @@
 /**
- * 页面结构约定：三个静态入口、地址唯一来源、文档锚点不悬空、
- * 入口 HTML 里不写字面文案（标题/描述/canonical 由 web/page-meta.ts 注入）。
+ * 内容约定：Markdown 是唯一的正文来源。
+ *
+ * 检查的是"写的内容上线后会坏"的几类问题：内部链接指向不存在的页面、外链跑到
+ * 未审计的域名、页面缺标题/描述、侧边栏链接悬空。
  */
 
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { join, relative } from "node:path";
 import test from "node:test";
 
-import { applyMeta, metaFor } from "../web/page-meta";
-import { PAGES, SITE } from "../web/site";
+import { ALLOWED_EXTERNAL_HOSTS, SITE } from "../.vitepress/site";
 
-const WEB = join(import.meta.dirname, "..", "web");
+const ROOT = join(import.meta.dirname, "..");
+const CONTENT = join(ROOT, "content");
 
-const ENTRIES: { page: keyof typeof PAGES; file: string }[] = [
-  { page: "home", file: "index.html" },
-  { page: "docs", file: "docs/index.html" },
-  { page: "jlmua", file: "jlmua/index.html" },
-];
-
-function read(path: string): string {
-  return readFileSync(join(WEB, path), "utf8");
+function markdownFiles(): string[] {
+  return readdirSync(CONTENT, { recursive: true, encoding: "utf8" })
+    .filter((name) => name.endsWith(".md"))
+    .sort();
 }
 
-test("三个入口与 PAGES 一一对应，且都声明了页面标识", () => {
-  assert.deepEqual(Object.keys(PAGES).sort(), ["docs", "home", "jlmua"]);
-  for (const entry of ENTRIES) {
-    const html = read(entry.file);
-    assert.match(html, new RegExp(`data-page="${entry.page}"`), `${entry.file} 缺少 data-page`);
-    assert.match(html, /<html lang="zh-CN">/);
+function read(file: string): string {
+  return readFileSync(join(CONTENT, file), "utf8");
+}
+
+function frontmatter(source: string): Record<string, string> {
+  const match = /^---\n([\s\S]*?)\n---/.exec(source);
+  if (!match) return {};
+  const fields: Record<string, string> = {};
+  for (const line of match[1].split("\n")) {
+    const field = /^([a-z][a-zA-Z]*):\s*(.*)$/.exec(line);
+    if (field) fields[field[1]] = field[2].replace(/^["']|["']$/g, "");
+  }
+  return fields;
+}
+
+/** 把站内链接解析成 content/ 下的真实文件。 */
+function resolveInternal(link: string): string | null {
+  const path = link.split("#")[0].split("?")[0];
+  if (!path.startsWith("/")) return null;
+  const rel = path.replace(/^\//, "");
+  const candidates = rel === "" || rel.endsWith("/")
+    ? [`${rel}index.md`]
+    : [`${rel}.md`, `${rel}/index.md`, rel];
+  return candidates.find((candidate) => existsSync(join(CONTENT, candidate))) ?? null;
+}
+
+const FILES = markdownFiles();
+
+test("必需的页面都在", () => {
+  for (const page of [
+    "index.md",
+    "docs/index.md",
+    "docs/register.md",
+    "docs/login.md",
+    "docs/server.md",
+    "docs/skins.md",
+    "docs/faq.md",
+    "docs/admin.md",
+    "jlmua/index.md",
+  ]) {
+    assert.ok(FILES.includes(page), `缺少 ${page}`);
   }
 });
 
-test("入口 HTML 只放占位符，不写人类文案", () => {
-  for (const entry of ENTRIES) {
-    const html = read(entry.file);
-    for (const token of ["%PAGE_TITLE%", "%PAGE_DESCRIPTION%", "%PAGE_CANONICAL%"]) {
-      assert.ok(html.includes(token), `${entry.file} 缺少占位符 ${token}`);
-    }
-    assert.equal(
-      /[\u4e00-\u9fff]/.test(html),
-      false,
-      `${entry.file} 里还有中文字面量，文案应写在 locales/zh-CN.ts`,
+test("每个页面都有标题与描述（搜索与分享卡片直接读它们）", () => {
+  for (const file of FILES) {
+    const fields = frontmatter(read(file));
+    assert.ok(fields.title, `${file} 缺少 frontmatter title`);
+    assert.ok(fields.description, `${file} 缺少 frontmatter description`);
+    assert.ok(
+      fields.description.length >= 20 && fields.description.length <= 120,
+      `${file} 的描述长度 ${fields.description.length} 不适合做搜索摘要`,
     );
-    assert.equal(/https?:\/\//.test(html), false, `${entry.file} 里还有硬编码地址`);
   }
 });
 
-test("注入后的标题、描述、canonical 与页面元数据一致", () => {
-  for (const entry of ENTRIES) {
-    const meta = metaFor(entry.page);
-    const html = applyMeta(read(entry.file));
-    assert.ok(html.includes(`<title>${meta.title}</title>`), `${entry.file} 标题未注入`);
-    assert.ok(html.includes(meta.description), `${entry.file} 描述未注入`);
-    assert.ok(html.includes(`href="${meta.canonical}"`), `${entry.file} canonical 未注入`);
-    assert.equal(
-      meta.canonical,
-      `${SITE.origin}${PAGES[entry.page]}`,
-      `${entry.page} 的 canonical 应由 PAGES 推出`,
-    );
-  }
-});
-
-test("外部地址全部是 https，且来自 site.ts 单一清单", () => {
-  const collect = (value: unknown, path = "SITE"): [string, string][] => {
-    if (typeof value === "string") return [[path, value]];
-    if (value && typeof value === "object") {
-      return Object.entries(value as Record<string, unknown>).flatMap(([key, child]) =>
-        collect(child, `${path}.${key}`),
+test("站内链接都指向真实页面", () => {
+  for (const file of FILES) {
+    const source = read(file);
+    const links = [...source.matchAll(/\]\((\/[^)\s]*)\)/g)].map((m) => m[1]);
+    for (const link of links) {
+      assert.ok(
+        resolveInternal(link),
+        `${file} 里的站内链接 ${link} 没有对应页面`,
       );
     }
-    return [];
-  };
-
-  for (const [path, url] of collect(SITE)) {
-    assert.match(url, /^https:\/\//, `${path} 必须是 https：${url}`);
   }
 });
 
-test("页面源码里不出现硬编码的绝对地址", () => {
-  const sources = ["pages/home.tsx", "pages/docs.tsx", "pages/jlmua.tsx", "components/shell.tsx"];
-  for (const name of sources) {
-    const source = readFileSync(join(WEB, name), "utf8");
-    const urls = source.match(/https?:\/\/[^\s"'`)]+/g) ?? [];
-    assert.deepEqual(urls, [], `${name} 直接写了地址：${urls.join(", ")}`);
+test("外链只能是 https，且域名在审计清单里", () => {
+  for (const file of FILES) {
+    const urls = read(file).match(/https?:\/\/[^\s)"'>\]]+/g) ?? [];
+    for (const url of urls) {
+      assert.match(url, /^https:\/\//, `${file} 里有非 https 地址：${url}`);
+      const host = new URL(url).host;
+      assert.ok(
+        (ALLOWED_EXTERNAL_HOSTS as readonly string[]).includes(host),
+        `${file} 引用了未登记的域名：${host}`,
+      );
+    }
   }
 });
 
-test("文档页目录里的每个锚点都有对应的小节", () => {
-  const source = read("pages/docs.tsx");
-  const tocIds = [...source.matchAll(/\{ id: "([a-z-]+)", title:/g)].map((m) => m[1]);
-  assert.ok(tocIds.length >= 5, `目录条目太少：${tocIds.join(", ")}`);
-  for (const id of tocIds) {
-    assert.ok(source.includes(`id="${id}"`), `目录里的 ${id} 没有对应小节`);
+test("站内链接一律用相对路径，不写本站的绝对地址", () => {
+  const origin = new URL(SITE.origin).host;
+  for (const file of FILES) {
+    const absolute = [...read(file).matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)]
+      .map((match) => match[1])
+      .filter((url) => new URL(url).host === origin);
+    assert.deepEqual(
+      absolute,
+      [],
+      `${file} 里用绝对地址链接本站：${absolute.join(", ")}，请改成 /docs/ 这类相对路径`,
+    );
   }
 });
 
-test("JLMUA 页面标注了寄生状态与迁出计划", () => {
-  const source = read("pages/jlmua.tsx");
-  assert.ok(source.includes('t("筹备中")'), "缺少筹备中标记");
-  assert.ok(
-    source.includes('t("这一页暂时寄生在 www.jlucraft.com 之下，独立站点就绪后会迁出。")'),
+test("首页与 JLMUA 的关键链接指向正确目标", () => {
+  const home = read("index.md");
+  assert.ok(home.includes(SITE.skin), "首页缺少皮肤站入口");
+  assert.ok(home.includes(SITE.launcher), "首页缺少启动器下载入口");
+  assert.ok(home.includes("layout: page"), "首页使用自定义版式，不走主题的 home 布局");
+  assert.ok(home.includes("pageClass: lp-page"), "首页需要 lp-page 页面类来挂自定义版式");
+  assert.ok(home.includes("::: lp hero"), "首页主视觉应使用自己的容器，而不是主题 hero");
+
+  const jlmua = read("jlmua/index.md");
+  assert.ok(jlmua.includes("筹备中"), "JLMUA 页缺少筹备中标记");
+  assert.ok(jlmua.includes("暂时寄生"), "JLMUA 页缺少寄生说明");
+  assert.ok(jlmua.includes(SITE.mua.docs), "JLMUA 页缺少 MUA 官方文档链接");
+});
+
+test("侧边栏里的链接都能打开，导航用 PAGES 单一来源", () => {
+  const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
+  const links = [...config.matchAll(/link:\s*"(\/[^"]*)"/g)].map((m) => m[1]);
+  assert.ok(links.length >= 7, `只找到 ${links.length} 个侧边栏链接`);
+  for (const link of links) {
+    assert.ok(resolveInternal(link), `侧边栏里的 ${link} 没有对应页面`);
+  }
+  // 顶部导航三个入口必须来自 PAGES，避免路径写死在两处
+  assert.match(config, /link:\s*PAGES\.home/);
+  assert.match(config, /link:\s*PAGES\.docs/);
+  assert.match(config, /link:\s*PAGES\.jlmua/);
+});
+
+test("落地页用到的每个 lp-* 类都有样式（防手滑写错容器名）", () => {
+  const home = read("index.md");
+  const brand = readFileSync(join(ROOT, ".vitepress", "theme", "brand.css"), "utf8");
+
+  const containerClasses = new Set<string>();
+  for (const line of home.split("\n")) {
+    const match = /^:{3,4}\s+lp\s+(.+)$/.exec(line.trim());
+    if (!match) continue;
+    for (const word of match[1].trim().split(/\s+/)) containerClasses.add(`lp-${word}`);
+  }
+  assert.ok(containerClasses.size >= 4, `容器类太少：${[...containerClasses].join(", ")}`);
+
+  const attrClasses = new Set(
+    [...home.matchAll(/\{ \.(lp-[a-z-]+)/g)].map((match) => match[1]),
   );
+  assert.ok(attrClasses.size >= 3, `属性类太少：${[...attrClasses].join(", ")}`);
+
+  for (const name of [...containerClasses, ...attrClasses]) {
+    assert.ok(brand.includes(`.${name}`), `${name} 没有对应样式`);
+  }
 });
 
-test("落地页不再声称运维文档在仓库里（实际只在本地 docs/）", () => {
-  const locale = read("locales/zh-CN.ts");
-  assert.ok(
-    !locale.includes("部署与运维说明在各仓库内"),
-    "这句话不准确：部署指南在本地 docs/，没有公开在仓库里",
-  );
-  assert.ok(locale.includes("部署与运维文档由各校负责人持有"));
+test("导航包含皮肤站入口（外链直接指向门户）", () => {
+  const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
+  assert.ok(config.includes("SITE.skin"), "导航里应包含皮肤站入口");
+});
+
+test("文档页都在 sidebar 覆盖范围内", () => {
+  const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
+  for (const file of FILES) {
+    if (!file.startsWith("docs/")) continue;
+    const link = `/${file.replace(/index\.md$/, "").replace(/\.md$/, "")}`;
+    assert.ok(
+      config.includes(`"${link}"`),
+      `${relative(CONTENT, join(CONTENT, file))} 没有出现在侧边栏（期望 ${link}）`,
+    );
+  }
 });

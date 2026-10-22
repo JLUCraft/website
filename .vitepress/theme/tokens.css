@@ -95,3 +95,29 @@
     --error-bg: #4d0b0a;
   }
 }
+
+/* 按 class 切模式的框架（VitePress 等）用这一段：值与上面的深色模式相同，
+   只是选择器从媒体查询换成 .dark，两者不冲突（class 声明在后，优先级相同）。 */
+.dark {
+  --bg: #151619;
+  --surface: #26282b;
+  --surface-alt: #383b3f;
+  --line: #383b3f;
+  --line-strong: #4f5359;
+  --ink: #f4f7fc;
+  --muted: #c0c4cb;
+  --primary: #234e9d;
+  --primary-hover: #3768c1;
+  --primary-text: #a4c5ff;
+  --on-primary: #ffffff;
+  --secondary: #97a2cf;
+  --on-secondary: #151619;
+  --accent: #a4c5ff;
+  --focus: #70a3ff;
+  --success: #98d6a4;
+  --on-success: #151619;
+  --success-bg: #003111;
+  --error: #ffaba1;
+  --on-error: #151619;
+  --error-bg: #4d0b0a;
+}

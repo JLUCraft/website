@@ -1,0 +1,423 @@
+/* VitePress 主题变量 → 品牌令牌映射。
+ *
+ * 只允许 var(--…)：任何十六进制色值都会被 test/tokens.test.ts 拦下。
+ * 深色模式不用在这里分写：tokens.css 里有 `.dark` 块，变量会自己切换。
+ */
+
+:root,
+.dark {
+  /* 品牌色 */
+  --vp-c-brand-1: var(--primary-text);
+  --vp-c-brand-2: var(--primary-hover);
+  --vp-c-brand-3: var(--primary);
+  --vp-c-brand-soft: var(--surface-alt);
+  --vp-c-brand-softer: var(--surface-alt);
+
+  /* 表面与文字 */
+  --vp-c-bg: var(--bg);
+  --vp-c-bg-alt: var(--surface-alt);
+  --vp-c-bg-elv: var(--surface);
+  --vp-c-bg-soft: var(--surface);
+  --vp-c-text-1: var(--ink);
+  --vp-c-text-2: var(--muted);
+  --vp-c-text-3: var(--muted);
+  --vp-c-divider: var(--line);
+  --vp-c-border: var(--line);
+  --vp-c-gutter: var(--line);
+
+  /* 主按钮 */
+  --vp-button-brand-bg: var(--primary);
+  --vp-button-brand-hover-bg: var(--primary-hover);
+  --vp-button-brand-active-bg: var(--primary-hover);
+  --vp-button-brand-border: var(--primary);
+  --vp-button-brand-text: var(--on-primary);
+  --vp-button-brand-hover-text: var(--on-primary);
+  --vp-button-brand-active-text: var(--on-primary);
+
+  /* 次要按钮 */
+  --vp-button-alt-bg: var(--surface);
+  --vp-button-alt-hover-bg: var(--surface-alt);
+  --vp-button-alt-active-bg: var(--surface-alt);
+  --vp-button-alt-border: var(--line-strong);
+  --vp-button-alt-text: var(--ink);
+  --vp-button-alt-hover-text: var(--ink);
+  --vp-button-alt-active-text: var(--ink);
+
+  /* 自定义容器：提示与危险用语义色；警告/信息沿用主题默认，避免自造第四套语义色 */
+  --vp-c-tip-1: var(--success);
+  --vp-c-tip-2: var(--success);
+  --vp-c-tip-3: var(--success);
+  --vp-c-tip-soft: var(--success-bg);
+  --vp-c-danger-1: var(--error);
+  --vp-c-danger-2: var(--error);
+  --vp-c-danger-3: var(--error);
+  --vp-c-danger-soft: var(--error-bg);
+
+  /* 字体与代码 */
+  --vp-font-family-base: var(--font-sans);
+  --vp-font-family-mono: var(--font-mono);
+  --vp-code-block-bg: var(--surface-alt);
+  --vp-code-color: var(--primary-text);
+  --vp-code-bg: var(--surface-alt);
+  --vp-code-line-highlight-color: var(--line);
+
+  /* 首页标题的渐变取自品牌色阶 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    120deg,
+    var(--brand-700) 20%,
+    var(--brand-400)
+  );
+}
+
+/* 形状与交互细节跟随令牌，让四个前端手感一致。
+   主题里 .VPButton.medium/.big 自带 20px 圆角，这里的选择器要压过它们。 */
+.VPButton.medium,
+.VPButton.big,
+.VPButton {
+  border-radius: var(--radius-md);
+  min-height: var(--touch-target);
+}
+
+.VPSidebarItem.is-active > .item .link .text {
+  color: var(--primary-text);
+}
+
+.VPNavBarMenuLink.active,
+.VPNavBarMenuLink:hover {
+  color: var(--primary-text);
+}
+
+:focus-visible {
+  outline: var(--focus-ring) solid var(--focus);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+.custom-block.tip {
+  border-color: var(--success);
+}
+
+.VPBadge.tip {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.VPBadge.danger {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+/* 首页功能卡：圆角与分隔线用令牌，避免和主题默认的 12px 混用 */
+.VPFeature {
+  border-radius: var(--radius-lg);
+  border-color: var(--line);
+}
+
+/* ===== 落地页 =====
+   首页不走主题的 home 布局：版式、立方体主视觉、卡片与步骤都自己写，
+   颜色/圆角/字号全部来自令牌（上面已经映射好），深色模式自动跟随。 */
+
+.lp-page .VPPage {
+  padding: 0;
+}
+
+.lp-hero,
+.lp-grid,
+.lp-steps,
+.lp-services {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--space-24);
+}
+
+.lp-hero {
+  position: relative;
+  text-align: center;
+  padding-block: var(--space-64) var(--space-48);
+}
+
+/* 像素网格底纹放在伪元素上，否则 mask 会把标题和按钮一起淡掉。 */
+.lp-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.75;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 72%);
+}
+
+/* 主视觉：三个等轴立方体，纯 CSS，无图片资源 */
+.lp-blocks {
+  position: relative;
+  height: 180px;
+  max-width: 520px;
+  margin: 0 auto var(--space-16);
+  perspective: 1400px;
+}
+
+.lp-cube {
+  position: absolute;
+  top: 40px;
+  transform: rotateX(-30deg) rotateY(45deg);
+  transform-style: preserve-3d;
+}
+
+.lp-cube--far {
+  left: 4%;
+  width: 56px;
+  height: 56px;
+  --half: 28px;
+}
+
+.lp-cube--main {
+  left: 50%;
+  top: 6px;
+  width: 104px;
+  height: 104px;
+  margin-left: -52px;
+  --half: 52px;
+}
+
+.lp-cube--near {
+  right: 6%;
+  width: 64px;
+  height: 64px;
+  --half: 32px;
+}
+
+.lp-face {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.lp-face--top {
+  background: var(--brand-300);
+  transform: rotateX(90deg) translateZ(var(--half));
+}
+
+.lp-face--left {
+  background: var(--brand-700);
+  transform: rotateY(-90deg) translateZ(var(--half));
+}
+
+.lp-face--right {
+  background: var(--brand-900);
+  transform: translateZ(var(--half));
+}
+
+.lp-eyebrow {
+  margin: 0 0 var(--space-8);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lp-title {
+  margin: 0 0 var(--space-16);
+  color: var(--ink);
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.lp-lead {
+  max-width: 44ch;
+  margin: 0 auto var(--space-24);
+  color: var(--muted);
+  font-size: var(--text-lg);
+  line-height: 1.75;
+}
+
+.lp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-20);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.lp-button + .lp-button {
+  margin-left: var(--space-8);
+}
+
+.lp-button--primary {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.lp-button--primary:hover {
+  border-color: var(--primary-hover);
+  background: var(--primary-hover);
+  color: var(--on-primary);
+}
+
+.lp-button--quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--primary-text);
+}
+
+.lp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-16);
+  padding-block: var(--space-32);
+  border-top: 1px solid var(--line);
+}
+
+.lp-card {
+  padding: var(--space-24);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+/* 卡片左上角的小方块：Minecraft 式的立体色块，纯 CSS */
+.lp-card::before {
+  content: "";
+  display: block;
+  width: var(--space-24);
+  height: var(--space-24);
+  margin-bottom: var(--space-12);
+  border-radius: 3px;
+  background: var(--brand-500);
+  box-shadow: inset calc(var(--space-6) * -1) calc(var(--space-6) * -1) 0 var(--brand-800);
+}
+
+.lp-card-title {
+  margin: 0 0 var(--space-8);
+  color: var(--ink);
+  font-size: var(--text-lg);
+}
+
+.lp-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.lp-steps,
+.lp-services {
+  padding-block: var(--space-32);
+  border-top: 1px solid var(--line);
+}
+
+.lp-section-title {
+  margin: 0 0 var(--space-16);
+  color: var(--muted);
+  font-size: var(--text-xl);
+}
+
+.lp-steps ol {
+  display: grid;
+  gap: var(--space-12);
+  max-width: var(--content-max);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.lp-steps li {
+  position: relative;
+  padding-left: var(--space-40);
+  color: var(--muted);
+  counter-increment: step;
+}
+
+/* 序号用绝对定位而不是 flex：紧凑列表里 li 的内容是纯行内节点，
+   用 flex 会把文字、链接拆成多个 flex item，窄屏上会被掰成竖条。 */
+.lp-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-24);
+  height: var(--space-24);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  color: var(--primary-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.lp-steps li strong {
+  color: var(--ink);
+}
+
+.lp-services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-8);
+  margin-bottom: var(--space-48);
+}
+
+.lp-services p {
+  margin: 0;
+}
+
+.lp-services .lp-section-title {
+  grid-column: 1 / -1;
+  margin-bottom: var(--space-8);
+}
+
+.lp-service {
+  display: block;
+  height: 100%;
+  padding: var(--space-16) var(--space-20);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.lp-service strong {
+  display: block;
+  color: var(--ink);
+  font-size: var(--text-lg);
+}
+
+.lp-service:hover {
+  border-color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .lp-hero {
+    padding-block: var(--space-32) var(--space-32);
+  }
+
+  .lp-blocks {
+    height: 140px;
+    transform: scale(0.8);
+    transform-origin: center top;
+  }
+
+  .lp-button + .lp-button {
+    margin-left: 0;
+  }
+
+  .lp-hero .lp-button {
+    margin: var(--space-4) 0;
+  }
+}

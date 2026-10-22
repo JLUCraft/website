@@ -39,7 +39,7 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v6
 
-      # 上传的就是 dist/：CNAME 与 .nojekyll 由 web/public/ 复制进来。
+      # 上传的就是 dist/：CNAME 与 .nojekyll 由 public/ 复制进来。
       # 默认会排除点开头的文件（--exclude=.[^/]*），所以 .nojekyll 必须靠
       # include-hidden-files 才会进产物。
       - name: Upload artifact

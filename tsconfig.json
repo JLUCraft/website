@@ -7,9 +7,8 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "jsx": "react-jsx",
     "noEmit": true,
-    "types": ["node", "vite/client"]
+    "types": ["node"]
   },
-  "include": ["web", "test", "vite.config.ts"]
+  "include": [".vitepress", "test"]
 }
