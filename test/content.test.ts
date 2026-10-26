@@ -52,6 +52,7 @@ const FILES = markdownFiles();
 test("必需的页面都在", () => {
   for (const page of [
     "index.md",
+    "news/index.md",
     "about/index.md",
     "links/index.md",
     "privacy/index.md",
@@ -158,6 +159,7 @@ test("侧边栏里的链接都能打开，导航用 PAGES 单一来源", () => {
   }
   // 顶部导航三个入口必须来自 PAGES，避免路径写死在两处
   assert.match(config, /link:\s*PAGES\.home/);
+  assert.match(config, /link:\s*PAGES\.news/);
   assert.match(config, /link:\s*PAGES\.docs/);
   assert.match(config, /link:\s*PAGES\.jlmua/);
 });

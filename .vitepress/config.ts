@@ -1,10 +1,21 @@
 import container from "markdown-it-container";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitepress";
 
+import { readNews, toRss } from "./news";
 import { canonicalFor, PAGES, SITE } from "./site";
+
+const CONTENT_DIR = fileURLToPath(new URL("../content", import.meta.url));
+
+// VitePress 默认从 <srcDir>/public 复制静态文件；本仓库把 public/ 放在仓库根，
+// 不显式指定的话 CNAME、.nojekyll 与 favicon 都不会进 dist/。
+const PUBLIC_DIR = fileURLToPath(new URL("../public", import.meta.url));
 
 const NAV = [
   { text: "首页", link: PAGES.home },
+  { text: "动态", link: PAGES.news, activeMatch: "^/news/" },
   { text: "关于", link: "/about/" },
   { text: "玩家文档", link: PAGES.docs, activeMatch: "^/docs/" },
   { text: "技术文档", link: PAGES.tech, activeMatch: "^/tech/" },
@@ -62,9 +73,31 @@ export default defineConfig({
   base: "/",
   cleanUrls: false,
 
+  // 站点图标用社团徽标（public/favicon-*.png，由 brand-palette 从 icon.png 缩放）；
+  // theme-color 取 tokens.css 的 --bg（浅/深两值），让移动端地址栏与页面同色。
+  head: [
+    ["link", { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" }],
+    ["link", { rel: "apple-touch-icon", sizes: "180x180", href: "/favicon-180.png" }],
+    ["link", { rel: "alternate", type: "application/rss+xml", title: "JLUCraft 动态", href: "/feed.xml" }],
+    ["meta", { property: "og:image", content: `${SITE.origin}/favicon-192.png` }],
+    [
+      "meta",
+      { name: "theme-color", media: "(prefers-color-scheme: light)", content: "#f5f7f9" },
+    ],
+    [
+      "meta",
+      { name: "theme-color", media: "(prefers-color-scheme: dark)", content: "#151619" },
+    ],
+    ["meta", { name: "color-scheme", content: "light dark" }],
+  ],
+
   srcDir: "content",
   outDir: "dist",
+  publicDir: PUBLIC_DIR,
   cacheDir: ".vitepress/cache",
+
+  // Vite 的静态目录同样默认取 <srcDir>/public；两处都对齐到仓库根的 public/。
+  vite: { publicDir: PUBLIC_DIR },
 
   lastUpdated: false,
   sitemap: { hostname: SITE.origin },
@@ -96,6 +129,14 @@ export default defineConfig({
       ...(pageData.frontmatter.head ?? []),
       ["link", { rel: "canonical", href: canonicalFor(pageData.relativePath) }],
     ];
+  },
+
+  // 构建结束后把动态写成 RSS 2.0，GitHub Pages 直接托管 /feed.xml。
+  buildEnd(siteConfig) {
+    writeFileSync(
+      join(siteConfig.outDir, "feed.xml"),
+      toRss(readNews(CONTENT_DIR), { origin: SITE.origin, title: "JLUCraft 动态" }),
+    );
   },
 
   themeConfig: {

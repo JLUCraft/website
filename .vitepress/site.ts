@@ -37,6 +37,7 @@ export const SITE = {
 
 export const PAGES = {
   home: "/",
+  news: "/news/",
   docs: "/docs/",
   tech: "/tech/",
   jlmua: "/jlmua/",
