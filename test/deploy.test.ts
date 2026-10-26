@@ -39,6 +39,13 @@ test("站点以根路径发布，且产物落在 dist/", () => {
   assert.match(CONFIG, /srcDir:\s*["']content["']/);
 });
 
+test("publicDir 指向仓库根的 public/（否则 CNAME、.nojekyll 与图标不会进 dist）", () => {
+  // VitePress 与 Vite 默认取 <srcDir>/public，而 srcDir 是 content/，两者都要显式对齐。
+  assert.match(CONFIG, /publicDir:\s*PUBLIC_DIR/);
+  assert.match(CONFIG, /vite:\s*\{\s*publicDir:\s*PUBLIC_DIR\s*\}/);
+  assert.match(CONFIG, /new URL\(["']\.\.\/public["'],\s*import\.meta\.url\)/);
+});
+
 test("cleanUrls 必须关闭：GitHub Pages 不支持无扩展名路由", () => {
   assert.match(CONFIG, /cleanUrls:\s*false/);
   assert.equal(canonicalFor("docs/faq.md"), `${SITE.origin}/docs/faq.html`);
@@ -81,4 +88,17 @@ test("工作流只用登记的 action，且版本不低于下限", () => {
 test("仓库里没有任何反向代理配置残留", () => {
   const agents = readFileSync(join(ROOT, "AGENTS.md"), "utf8");
   assert.ok(!/nginx|try_files|rsync/i.test(agents), "AGENTS.md 里还有反代部署说明");
+});
+
+
+test("main pushes have one validation owner and deploy the checked artifact", () => {
+  const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
+  assert.doesNotMatch(ci, /^  push:/m);
+  assert.match(ci, /^  pull_request:/m);
+  assert.match(WORKFLOW, /^  push:/m);
+  const build = WORKFLOW.indexOf("run: bun run build");
+  const checks = WORKFLOW.indexOf("run: bun run test");
+  const upload = WORKFLOW.indexOf("uses: actions/upload-pages-artifact@");
+  assert.ok(build >= 0 && checks > build && upload > checks);
+  assert.match(WORKFLOW, /deploy:\n\s+needs: build/);
 });
