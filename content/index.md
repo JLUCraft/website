@@ -24,6 +24,14 @@ description: 吉林大学 Minecraft 同好会：学校邮箱注册，同好会�
 [下载启动器](https://github.com/JLUCraft/FollyLauncher/releases){ .lp-button .lp-button--quiet }
 :::
 
+::: lp steps
+## 三步进服 { .lp-section-title }
+
+1. **注册皮肤站账号**：在[皮肤站](https://skin.jlucraft.com/portal/)填写学校邮箱，收信验证后创建角色。
+2. **安装并登录启动器**：启动器内置同好会认证服务器，登录后自动绑定本机身份。
+3. **连接服务器**：从启动器列表选择服务器，或手动填入管理员发来的地址。
+:::
+
 :::: lp grid
 ::: lp card
 ### 同好会
@@ -41,12 +49,14 @@ description: 吉林大学 Minecraft 同好会：学校邮箱注册，同好会�
 :::
 ::::
 
-::: lp steps
-## 三步进服 { .lp-section-title }
+::: lp services
+## 自研设施 { .lp-section-title }
 
-1. **注册皮肤站账号**：在[皮肤站](https://skin.jlucraft.com/portal/)填写学校邮箱，收信验证后创建角色。
-2. **安装并登录启动器**：启动器内置同好会认证服务器，登录后自动绑定本机身份。
-3. **连接服务器**：从启动器列表选择服务器，或手动填入管理员发来的地址。
+[**皮肤站** 统一账号与材质：注册、登录、上传皮肤，所有服务器从同一处读取。](https://skin.jlucraft.com/portal/){ .lp-service }
+
+[**启动器** 一键安装游戏，内置同好会认证与服务器列表，支持跨端登录。](https://github.com/JLUCraft/FollyLauncher/releases){ .lp-service }
+
+[**基础设施** 联邦服务器、中继与管理端支撑跨校联机、赛事与审批。](/tech/clients){ .lp-service }
 :::
 
 ::: lp services
