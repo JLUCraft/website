@@ -33,6 +33,23 @@ bun run palette emblem.png --id jlu --name 吉林大学 --out brands/jlu \
 
 `--check` 会校验这些文件是否与算法一致，可用于发现手工改动。
 
+## Regenerate consumer themes
+
+Committed `brands/<id>/brand.json` supplies the palette for theme generation. The CLI resolves semantic colors and contrast checks from that data.
+
+```sh
+cd brand-palette
+bun run palette --brand brands/jlu/brand.json \
+  --chakra ../FollyLauncher/src/styles/brand-theme.gen.ts \
+  --compose ../union-manager/app/src/main/kotlin/com/jlucraft/manager/nativecore/BrandColors.kt \
+  --css ../federated-skinstation/web/tokens.css
+bun run palette --brand brands/jlu/brand.json \
+  --css ../jlucraft-web/.vitepress/theme/tokens.css
+bun run check:consumers
+```
+
+`check:consumers` compares actual theme files in all four sibling consumers with the generated output. `--check` also checks the explicit CLI output paths. Compose maps `primary` to the readable foreground token and calculates its button foreground from that color.
+
 ## 前端接入
 
 - 皮肤站与本站只用 `var(--token)`，不在样式里写色值
