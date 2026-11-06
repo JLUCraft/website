@@ -1,5 +1,5 @@
 /**
- * 样式约定：颜色与尺寸只来自生成的 tokens.css；brand.css 只做变量映射，
+ * 样式约定：颜色与尺寸只来自静态 tokens.css；brand.css 只做变量映射，
  * 不写字面色值、不重复声明令牌。
  */
 
@@ -17,9 +17,8 @@ function declared(css: string): Set<string> {
   return new Set([...css.matchAll(/^\s*--([a-z0-9-]+)\s*:/gm)].map((m) => m[1]));
 }
 
-test("tokens.css 是生成文件，且同时支持媒体查询与 .dark 两种深色切换", () => {
-  assert.ok(TOKENS.includes("生成文件，请勿手改"));
-  assert.ok(TOKENS.includes("brand-palette"));
+test("tokens.css 是静态品牌令牌，且同时支持媒体查询与 .dark 两种深色切换", () => {
+  assert.match(TOKENS, /^\/\* 静态品牌令牌/);
   assert.ok(TOKENS.includes("@media (prefers-color-scheme: dark)"));
   assert.ok(TOKENS.includes(".dark {"), "VitePress 用 class 切深色，必须有 .dark 块");
   for (const token of ["brand-500", "brand-base", "bg", "ink", "primary", "on-primary"]) {

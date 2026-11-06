@@ -14,7 +14,7 @@ VitePress 静态站点，正文用 Markdown 写。
 - `.vitepress/news.ts`：读 `content/news/*.md` 生成 RSS 2.0；`.vitepress/theme/news.data.ts`
   给列表组件供数（两者都以 Markdown 为唯一事实源）。
 - `.vitepress/site.ts`：**站外地址与页面路径的唯一来源**，导航与测试都从这里读。
-- `.vitepress/theme/`：`tokens.css`（生成物）+ `brand.css`（VitePress 变量映射 + 落地页版式）。
+- `.vitepress/theme/`：`tokens.css`（静态品牌令牌）+ `brand.css`（VitePress 变量映射 + 落地页版式）。
 - `public/`：`CNAME`、`.nojekyll` 与社团徽标缩放出的 `favicon-*.png`；构建时复制进 `dist/`。
 
 ## 2. 名词
@@ -54,12 +54,11 @@ VitePress 静态站点，正文用 Markdown 写。
 
 ## 4. 样式规矩
 
-- 颜色与尺寸只来自生成的 `tokens.css`；`brand.css` 里不允许出现十六进制或 `rgb()/hsl()` 色值。
+- 颜色与尺寸只来自静态 `tokens.css`；`brand.css` 里不允许出现十六进制或 `rgb()/hsl()` 色值。
 - 深色模式只写一套：`tokens.css` 的 `.dark` 块会切换变量，`brand.css` 不重复定义深色值。
 - 不引入任何外站素材（参考站点的图片、图标、字体一律不复制）。落地页主视觉是纯 CSS 立方体，
   像素网格底纹是渐变，没有任何图片资源。
-- 站点图标用社团自制徽标 `icon.png`（蓝环 + 草方块 + 吉林大学，非校徽），
-  由 `brand-palette` 的 `iconSet()` 缩放成 `public/favicon-*.png`；换图标只重跑缩放、不手改 PNG。
+- `public/favicon-*.png` 为已固化的静态图标，使用社团自制徽标。
 - 参考站点的版式取向（大主视觉 + 一句主张 + 图标化特性列 + 服务入口卡）可以参考，
   实现必须用自己的类名与令牌。
 
@@ -69,7 +68,7 @@ VitePress 静态站点，正文用 Markdown 写。
 bun run build && bun run test
 ```
 
-`build` 会做死链检查；测试覆盖：生成令牌的标记与完整性、`brand.css` 零字面色值与断链变量、
+`build` 会做死链检查；测试覆盖：静态令牌的标记与完整性、`brand.css` 零字面色值与断链变量、
 容器的 `lp-*` 类是否都有样式、站内链接与侧边栏是否悬空、外链域名白名单、
 页面 frontmatter、禁用词、三个名词的用法、部署配置（CNAME / `.nojekyll` / `dist` /
 `cleanUrls: false`）、Dependabot 目录、动态排序与 RSS 结构。

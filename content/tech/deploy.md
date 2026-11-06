@@ -12,7 +12,6 @@ description: 皮肤站与联邦服务器的启动配置、健康检查接口与�
 | 皮肤站 | [federated-skinstation](https://github.com/JLUCraft/federated-skinstation) | `GET /health/ready` 返回就绪 |
 | 联邦服务器 | [federated-server](https://github.com/JLUCraft/federated-server) | `federated-server check` 通过 |
 | 启动器 | [FollyLauncher](https://github.com/JLUCraft/FollyLauncher) | 登录成功，能拉取实例与材质 |
-| 管理端 | [union-manager](https://github.com/JLUCraft/union-manager) | 设备绑定与身份查看完成 |
 
 ## 皮肤站
 
@@ -56,6 +55,4 @@ Set `FOUNDER_MANIFEST` when checking the host binary. Isolated host tests use `t
 | federated-server | `cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings && cargo test --locked` |
 | federated-skinstation | `bun run build && bun run test` |
 | FollyLauncher | `eslint src --max-warnings=0 && tsc --noEmit && node scripts/locale/index.js diff en` |
-| union-manager | `./scripts/build-native.sh && ./scripts/test-android.sh build` |
-| brand-palette | `bun run build && bun run test` |
 | jlucraft-web | `bun run build && bun run test` |

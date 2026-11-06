@@ -1,6 +1,6 @@
 ---
 title: 启动器与管理端
-description: 启动器是玩家入口，管理端是社团与管理入口；两者都以设备身份接入同一套身份系统。
+description: 启动器是玩家入口，管理面改由 agent + MCP，Android 管理端已停用。
 ---
 
 # 启动器与管理端
@@ -14,14 +14,11 @@ description: 启动器是玩家入口，管理端是社团与管理入口；两�
 - **扩展与 MCP**：扩展系统与本地 MCP 服务，供自动化与工具调用
 - **品牌**：产品名、深链 scheme、标识符来自 `brands/<id>/brand.json`，换学校只换数据
 
-## union-manager（社团与管理入口）
+## Management
 
-- **技术栈**：Android Compose 前端 + Rust native 库（JNI），复用 `union-core`
-- **身份**：查看本机身份、发起绑定、设备授权与吊销、成员资格签发
-- **联赛**：赛季、赛事报名、队伍、计分
-- **房间**：创建与管理成员房间
-- **办公**：草稿、审批、联署与发布流程，见[办公与审批](/tech/office)
-- **配色**：`Theme.kt` 只做模式选择，色板由 `BrandColors.kt` 生成
+Management uses agents and MCP. `jlucraft-agent` creates keys and signs commands and identity records locally; the MCP gateway forwards signed requests to the service.
+
+The Android `union-manager` app is retired. Its directory and Git history remain for migration reference.
 
 ## 设备签名校验
 

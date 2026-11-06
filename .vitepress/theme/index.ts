@@ -4,7 +4,7 @@ import DefaultTheme from "vitepress/theme";
 // @ts-expect-error -- Vue single-file component
 import NewsList from "./components/NewsList.vue";
 
-// 令牌是生成物（brand-palette），brand.css 只做 VitePress 变量到令牌的映射。
+// 静态品牌令牌，原生成器已移除；brand.css 只做 VitePress 变量到令牌的映射。
 import "./tokens.css";
 import "./brand.css";
 

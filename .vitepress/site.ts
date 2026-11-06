@@ -17,8 +17,6 @@ export const SITE = {
     "skin-station": "https://github.com/JLUCraft/federated-skinstation",
     "federated-server": "https://github.com/JLUCraft/federated-server",
     "union-core": "https://github.com/JLUCraft/union-core",
-    "union-manager": "https://github.com/JLUCraft/union-manager",
-    "brand-palette": "https://github.com/JLUCraft/brand-palette",
     "minecraftd": "https://github.com/JLUCraft/minecraftd",
     "paper-scoring": "https://github.com/JLUCraft/paper-scoring-template",
   },

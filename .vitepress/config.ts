@@ -73,7 +73,7 @@ export default defineConfig({
   base: "/",
   cleanUrls: false,
 
-  // 站点图标用社团徽标（public/favicon-*.png，由 brand-palette 从 icon.png 缩放）；
+  // 站点图标为已固化的静态图标，位于 public/favicon-*.png；
   // theme-color 取 tokens.css 的 --bg（浅/深两值），让移动端地址栏与页面同色。
   head: [
     ["link", { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" }],
