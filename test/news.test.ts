@@ -25,7 +25,11 @@ test("动态按日期倒序，且每篇都有标题、描述与 .html 地址", (
     assert.match(post.date, /^\d{4}-\d{2}-\d{2}$/);
   }
   const dates = posts.map((p) => p.date);
-  assert.deepEqual(dates, [...dates].sort((a, b) => (a < b ? 1 : -1)), "应严格倒序");
+  assert.deepEqual(
+    dates,
+    [...dates].sort((a, b) => (a < b ? 1 : -1)),
+    "应严格倒序",
+  );
 });
 
 test("RSS 是合法结构的 2.0，且覆盖全部动态", () => {
@@ -41,12 +45,23 @@ test("RSS 是合法结构的 2.0，且覆盖全部动态", () => {
     assert.ok(xml.includes(`<title>${post.title}</title>`), `feed 缺少标题 ${post.title}`);
   }
   // pubDate 必须是 RFC 822（RSS 2.0 要求）
-  assert.match(xml, /<pubDate>[A-Z][a-z]{2}, \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT<\/pubDate>/);
+  assert.match(
+    xml,
+    /<pubDate>[A-Z][a-z]{2}, \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT<\/pubDate>/,
+  );
 });
 
 test("RSS 对标题/描述里的 XML 特殊字符做转义", () => {
   const xml = toRss(
-    [{ slug: "x", url: "/news/x.html", title: "A & B <tag>", description: '"q"', date: "2026-01-01" }],
+    [
+      {
+        slug: "x",
+        url: "/news/x.html",
+        title: "A & B <tag>",
+        description: '"q"',
+        date: "2026-01-01",
+      },
+    ],
     { origin: SITE.origin, title: "T" },
   );
   assert.ok(xml.includes("A &amp; B &lt;tag&gt;"));

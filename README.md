@@ -11,8 +11,13 @@ Published pages live in `content/` and are product content. `.vitepress/site.ts`
 Select one validation channel for a batch and reuse successful results for unchanged inputs. Standard commands:
 
 ```sh
+bun run format
 bun run build
 bun run test
 ```
+
+`build` runs `bun run check` before generating the site. See
+[AGENTS.md](AGENTS.md#5-验证) for the development check policy.
+Markdown content is maintained in its existing product format.
 
 Read [AGENTS.md](AGENTS.md) before making changes.

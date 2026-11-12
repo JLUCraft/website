@@ -17,7 +17,7 @@ export const SITE = {
     "skin-station": "https://github.com/JLUCraft/federated-skinstation",
     "federated-server": "https://github.com/JLUCraft/federated-server",
     "union-core": "https://github.com/JLUCraft/union-core",
-    "minecraftd": "https://github.com/JLUCraft/minecraftd",
+    minecraftd: "https://github.com/JLUCraft/minecraftd",
     "paper-scoring": "https://github.com/JLUCraft/paper-scoring-template",
   },
   mua: {
@@ -29,8 +29,7 @@ export const SITE = {
     qqGroup: "361033103",
   },
   /** 首页的搜索描述，也用作站点默认描述。 */
-  description:
-    "吉林大学 Minecraft 同好会：学校邮箱注册，同好会服务器与省联盟互通共用同一套身份。",
+  description: "吉林大学 Minecraft 同好会：学校邮箱注册，同好会服务器与省联盟互通共用同一套身份。",
 } as const;
 
 export const PAGES = {

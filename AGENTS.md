@@ -65,7 +65,7 @@ VitePress 静态站点，正文用 Markdown 写。
 ## 5. 验证
 
 ```
-bun run build && bun run test
+bun run format && bun run build && bun run test
 ```
 
 `build` 会做死链检查；测试覆盖：静态令牌的标记与完整性、`brand.css` 零字面色值与断链变量、
@@ -74,6 +74,13 @@ bun run build && bun run test
 `cleanUrls: false`）、Dependabot 目录、动态排序与 RSS 结构。
 
 本地预览：`bun run dev`（开发）、`bun run preview`（预览构建产物）。
+
+Every batch must pass `bun run check` before review and commit. It runs
+`oxfmt --check`, strict TypeScript checking, and type-aware `oxlint` with zero
+warnings. Run `bun run format` to apply formatting. All authored TypeScript,
+including theme components, configuration, and tests, belongs in `tsconfig.json`.
+Do not use `any` or suppress unsafe-value rules to make checks pass. Keep external
+data as `unknown` until it is narrowed. `build` runs the same check in CI.
 
 ## 6. 部署（GitHub Pages + 自定义域名）
 

@@ -2,7 +2,7 @@ import container from "markdown-it-container";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitepress";
+import { defineConfig, type HeadConfig } from "vitepress";
 
 import { readNews, toRss } from "./news";
 import { canonicalFor, PAGES, SITE } from "./site";
@@ -12,6 +12,31 @@ const CONTENT_DIR = fileURLToPath(new URL("../content", import.meta.url));
 // VitePress 默认从 <srcDir>/public 复制静态文件；本仓库把 public/ 放在仓库根，
 // 不显式指定的话 CNAME、.nojekyll 与 favicon 都不会进 dist/。
 const PUBLIC_DIR = fileURLToPath(new URL("../public", import.meta.url));
+
+function pageHead(value: unknown): HeadConfig[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) throw new Error("Page head must be an array");
+  return value.map((entry: unknown): HeadConfig => {
+    if (!Array.isArray(entry) || entry.length < 2 || entry.length > 3)
+      throw new Error("Page head entries must contain a tag, attributes, and optional content");
+    const parts: unknown[] = entry;
+    const [tag, rawAttributes, content] = parts;
+    if (
+      typeof tag !== "string" ||
+      rawAttributes === null ||
+      typeof rawAttributes !== "object" ||
+      Array.isArray(rawAttributes) ||
+      (content !== undefined && typeof content !== "string")
+    )
+      throw new Error("Invalid page head entry");
+    const attributes: Record<string, string> = {};
+    for (const [name, attribute] of Object.entries(rawAttributes)) {
+      if (typeof attribute !== "string") throw new Error("Head attributes must be strings");
+      attributes[name] = attribute;
+    }
+    return content === undefined ? [tag, attributes] : [tag, attributes, content];
+  });
+}
 
 const NAV = [
   { text: "首页", link: PAGES.home },
@@ -78,25 +103,20 @@ export default defineConfig({
   head: [
     ["link", { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" }],
     ["link", { rel: "apple-touch-icon", sizes: "180x180", href: "/favicon-180.png" }],
-    ["link", { rel: "alternate", type: "application/rss+xml", title: "JLUCraft 动态", href: "/feed.xml" }],
+    [
+      "link",
+      { rel: "alternate", type: "application/rss+xml", title: "JLUCraft 动态", href: "/feed.xml" },
+    ],
     ["meta", { property: "og:image", content: `${SITE.origin}/favicon-192.png` }],
-    [
-      "meta",
-      { name: "theme-color", media: "(prefers-color-scheme: light)", content: "#f5f7f9" },
-    ],
-    [
-      "meta",
-      { name: "theme-color", media: "(prefers-color-scheme: dark)", content: "#151619" },
-    ],
+    ["meta", { name: "theme-color", media: "(prefers-color-scheme: light)", content: "#f5f7f9" }],
+    ["meta", { name: "theme-color", media: "(prefers-color-scheme: dark)", content: "#151619" }],
     ["meta", { name: "color-scheme", content: "light dark" }],
   ],
 
   srcDir: "content",
   outDir: "dist",
-  publicDir: PUBLIC_DIR,
   cacheDir: ".vitepress/cache",
 
-  // Vite 的静态目录同样默认取 <srcDir>/public；两处都对齐到仓库根的 public/。
   vite: { publicDir: PUBLIC_DIR },
 
   lastUpdated: false,
@@ -115,9 +135,7 @@ export default defineConfig({
             .filter(Boolean)
             .map((name) => `lp-${name}`)
             .join(" ");
-          return tokens[index].nesting === 1
-            ? `<section class="${classes}">\n`
-            : "</section>\n";
+          return tokens[index].nesting === 1 ? `<section class="${classes}">\n` : "</section>\n";
         },
       });
     },
@@ -126,7 +144,7 @@ export default defineConfig({
   // 每个页面注入自己的 canonical；路径规则与可访问地址保持一致。
   transformPageData(pageData) {
     pageData.frontmatter.head = [
-      ...(pageData.frontmatter.head ?? []),
+      ...pageHead(pageData.frontmatter.head),
       ["link", { rel: "canonical", href: canonicalFor(pageData.relativePath) }],
     ];
   },

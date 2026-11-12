@@ -8,7 +8,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node", "vite/client"]
   },
-  "include": [".vitepress", "test"]
+  "include": [".vitepress/**/*.ts", "test"],
+  "exclude": ["node_modules", "dist", ".vitepress/cache"]
 }

@@ -41,9 +41,8 @@ function resolveInternal(link: string): string | null {
   const path = link.split("#")[0].split("?")[0];
   if (!path.startsWith("/")) return null;
   const rel = path.replace(/^\//, "");
-  const candidates = rel === "" || rel.endsWith("/")
-    ? [`${rel}index.md`]
-    : [`${rel}.md`, `${rel}/index.md`, rel];
+  const candidates =
+    rel === "" || rel.endsWith("/") ? [`${rel}index.md`] : [`${rel}.md`, `${rel}/index.md`, rel];
   return candidates.find((candidate) => existsSync(join(CONTENT, candidate))) ?? null;
 }
 
@@ -97,10 +96,7 @@ test("站内链接都指向真实页面", () => {
     const source = read(file);
     const links = [...source.matchAll(/\]\((\/[^)\s]*)\)/g)].map((m) => m[1]);
     for (const link of links) {
-      assert.ok(
-        resolveInternal(link),
-        `${file} 里的站内链接 ${link} 没有对应页面`,
-      );
+      assert.ok(resolveInternal(link), `${file} 里的站内链接 ${link} 没有对应页面`);
     }
   }
 });
@@ -176,9 +172,7 @@ test("落地页用到的每个 lp-* 类都有样式（防手滑写错容器名�
   }
   assert.ok(containerClasses.size >= 4, `容器类太少：${[...containerClasses].join(", ")}`);
 
-  const attrClasses = new Set(
-    [...home.matchAll(/\{ \.(lp-[a-z-]+)/g)].map((match) => match[1]),
-  );
+  const attrClasses = new Set([...home.matchAll(/\{ \.(lp-[a-z-]+)/g)].map((match) => match[1]));
   assert.ok(attrClasses.size >= 3, `属性类太少：${[...attrClasses].join(", ")}`);
 
   for (const name of [...containerClasses, ...attrClasses]) {

@@ -12,10 +12,7 @@ import { canonicalFor, SITE } from "../.vitepress/site";
 
 const ROOT = join(import.meta.dirname, "..");
 const CONFIG = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
-const WORKFLOW = readFileSync(
-  join(ROOT, ".github", "workflows", "deploy.yml"),
-  "utf8",
-);
+const WORKFLOW = readFileSync(join(ROOT, ".github", "workflows", "deploy.yml"), "utf8");
 
 test("CNAME 与站点来源的主机名一致（否则 Pages 会用旧域名发证书）", () => {
   const host = new URL(SITE.origin).host;
@@ -40,8 +37,6 @@ test("站点以根路径发布，且产物落在 dist/", () => {
 });
 
 test("publicDir 指向仓库根的 public/（否则 CNAME、.nojekyll 与图标不会进 dist）", () => {
-  // VitePress 与 Vite 默认取 <srcDir>/public，而 srcDir 是 content/，两者都要显式对齐。
-  assert.match(CONFIG, /publicDir:\s*PUBLIC_DIR/);
   assert.match(CONFIG, /vite:\s*\{\s*publicDir:\s*PUBLIC_DIR\s*\}/);
   assert.match(CONFIG, /new URL\(["']\.\.\/public["'],\s*import\.meta\.url\)/);
 });
@@ -89,7 +84,6 @@ test("仓库里没有任何反向代理配置残留", () => {
   const agents = readFileSync(join(ROOT, "AGENTS.md"), "utf8");
   assert.ok(!/nginx|try_files|rsync/i.test(agents), "AGENTS.md 里还有反代部署说明");
 });
-
 
 test("main pushes have one validation owner and deploy the checked artifact", () => {
   const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");

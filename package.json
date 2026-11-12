@@ -8,7 +8,12 @@
   },
   "scripts": {
     "dev": "vitepress dev",
-    "build": "tsc --noEmit && vitepress build",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint --deny-warnings .",
+    "typecheck": "tsc --noEmit",
+    "check": "bun run format:check && bun run typecheck && bun run lint",
+    "build": "bun run check && vitepress build",
     "preview": "vitepress preview",
     "test": "tsx --test test/*.test.ts"
   },
@@ -16,8 +21,12 @@
     "@types/markdown-it-container": "^4.0.1",
     "@types/node": "^26.6.5",
     "markdown-it-container": "^4.0.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0",
+    "oxlint-tsgolint": "^7.0.2006",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "vue": "3.5.44"
   }
 }

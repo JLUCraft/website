@@ -27,9 +27,9 @@ test("tokens.css 是静态品牌令牌，且同时支持媒体查询与 .dark �
 });
 
 test("brand.css 只做映射：零字面色值", () => {
-  const literals = [
-    ...BRAND.matchAll(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)/g),
-  ].map((m) => m[0]);
+  const literals = [...BRAND.matchAll(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)/g)].map(
+    (m) => m[0],
+  );
   assert.deepEqual(literals, [], `brand.css 出现字面颜色：${literals.join(", ")}`);
 });
 
@@ -65,10 +65,6 @@ test("关键的 VitePress 变量都接到了品牌令牌", () => {
     "--vp-button-brand-text",
     "--vp-font-family-base",
   ]) {
-    assert.match(
-      BRAND,
-      new RegExp(`${name}:\\s*var\\(--`),
-      `${name} 应映射到品牌令牌`,
-    );
+    assert.match(BRAND, new RegExp(`${name}:\\s*var\\(--`), `${name} 应映射到品牌令牌`);
   }
 });

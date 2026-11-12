@@ -85,7 +85,7 @@ export function toRss(posts: NewsPost[], site: { origin: string; title: string }
       <guid isPermaLink="true">${site.origin}${post.url}</guid>
       <description>${escapeXml(post.description)}</description>
       <pubDate>${rfc822(post.date)}</pubDate>
-    </item>`
+    </item>`,
     )
     .join("\n");
 
