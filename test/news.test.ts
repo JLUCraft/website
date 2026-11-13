@@ -15,7 +15,7 @@ const ROOT = join(import.meta.dirname, "..");
 const CONTENT = join(ROOT, "content");
 const CONFIG = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
 
-test("动态按日期倒序，且每篇都有标题、描述与 .html 地址", () => {
+await test("动态按日期倒序，且每篇都有标题、描述与 .html 地址", () => {
   const posts = readNews(CONTENT);
   assert.ok(posts.length >= 2, `动态太少：${posts.length}`);
   for (const post of posts) {
@@ -32,7 +32,7 @@ test("动态按日期倒序，且每篇都有标题、描述与 .html 地址", (
   );
 });
 
-test("RSS 是合法结构的 2.0，且覆盖全部动态", () => {
+await test("RSS 是合法结构的 2.0，且覆盖全部动态", () => {
   const posts = readNews(CONTENT);
   const xml = toRss(posts, { origin: SITE.origin, title: "JLUCraft 动态" });
   assert.match(xml, /^<\?xml version="1\.0" encoding="UTF-8"\?>/);
@@ -51,7 +51,7 @@ test("RSS 是合法结构的 2.0，且覆盖全部动态", () => {
   );
 });
 
-test("RSS 对标题/描述里的 XML 特殊字符做转义", () => {
+await test("RSS 对标题/描述里的 XML 特殊字符做转义", () => {
   const xml = toRss(
     [
       {
@@ -68,7 +68,7 @@ test("RSS 对标题/描述里的 XML 特殊字符做转义", () => {
   assert.ok(!/[^&]& /.test(xml), "裸 & 未转义");
 });
 
-test("配置挂上了 feed.xml 生成、RSS alternate 与徽标图标", () => {
+await test("配置挂上了 feed.xml 生成、RSS alternate 与徽标图标", () => {
   assert.match(CONFIG, /buildEnd\(/);
   assert.match(CONFIG, /"feed\.xml"/);
   assert.match(CONFIG, /rel:\s*"alternate"[^\n]*application\/rss\+xml/);

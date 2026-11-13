@@ -48,7 +48,7 @@ function resolveInternal(link: string): string | null {
 
 const FILES = markdownFiles();
 
-test("必需的页面都在", () => {
+await test("必需的页面都在", () => {
   for (const page of [
     "index.md",
     "news/index.md",
@@ -79,7 +79,7 @@ test("必需的页面都在", () => {
   }
 });
 
-test("每个页面都有标题与描述（搜索与分享卡片直接读它们）", () => {
+await test("每个页面都有标题与描述（搜索与分享卡片直接读它们）", () => {
   for (const file of FILES) {
     const fields = frontmatter(read(file));
     assert.ok(fields.title, `${file} 缺少 frontmatter title`);
@@ -91,7 +91,7 @@ test("每个页面都有标题与描述（搜索与分享卡片直接读它们�
   }
 });
 
-test("站内链接都指向真实页面", () => {
+await test("站内链接都指向真实页面", () => {
   for (const file of FILES) {
     const source = read(file);
     const links = [...source.matchAll(/\]\((\/[^)\s]*)\)/g)].map((m) => m[1]);
@@ -101,7 +101,7 @@ test("站内链接都指向真实页面", () => {
   }
 });
 
-test("外链只能是 https，且域名在审计清单里", () => {
+await test("外链只能是 https，且域名在审计清单里", () => {
   for (const file of FILES) {
     // 代码示例里的 <占位地址> 不是链接，跳过
     const urls = (read(file).match(/https?:\/\/[^\s)"'>\]]+/g) ?? []).filter(
@@ -118,7 +118,7 @@ test("外链只能是 https，且域名在审计清单里", () => {
   }
 });
 
-test("站内链接一律用相对路径，不写本站的绝对地址", () => {
+await test("站内链接一律用相对路径，不写本站的绝对地址", () => {
   const origin = new URL(SITE.origin).host;
   for (const file of FILES) {
     const absolute = [...read(file).matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)]
@@ -132,7 +132,7 @@ test("站内链接一律用相对路径，不写本站的绝对地址", () => {
   }
 });
 
-test("首页与 JLMUA 的关键链接指向正确目标", () => {
+await test("首页与 JLMUA 的关键链接指向正确目标", () => {
   const home = read("index.md");
   assert.ok(home.includes(SITE.skin), "首页缺少皮肤站入口");
   assert.ok(home.includes(SITE.launcher), "首页缺少启动器下载入口");
@@ -146,7 +146,7 @@ test("首页与 JLMUA 的关键链接指向正确目标", () => {
   assert.ok(jlmua.includes(SITE.mua.docs), "JLMUA 页缺少 MUA 开发文档链接");
 });
 
-test("侧边栏里的链接都能打开，导航用 PAGES 单一来源", () => {
+await test("侧边栏里的链接都能打开，导航用 PAGES 单一来源", () => {
   const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
   const links = [...config.matchAll(/link:\s*"(\/[^"]*)"/g)].map((m) => m[1]);
   assert.ok(links.length >= 7, `只找到 ${links.length} 个侧边栏链接`);
@@ -160,7 +160,7 @@ test("侧边栏里的链接都能打开，导航用 PAGES 单一来源", () => {
   assert.match(config, /link:\s*PAGES\.jlmua/);
 });
 
-test("落地页用到的每个 lp-* 类都有样式（防手滑写错容器名）", () => {
+await test("落地页用到的每个 lp-* 类都有样式（防手滑写错容器名）", () => {
   const home = read("index.md");
   const brand = readFileSync(join(ROOT, ".vitepress", "theme", "brand.css"), "utf8");
 
@@ -180,12 +180,12 @@ test("落地页用到的每个 lp-* 类都有样式（防手滑写错容器名�
   }
 });
 
-test("导航包含皮肤站入口（外链直接指向门户）", () => {
+await test("导航包含皮肤站入口（外链直接指向门户）", () => {
   const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
   assert.ok(config.includes("SITE.skin"), "导航里应包含皮肤站入口");
 });
 
-test("文档页都在 sidebar 覆盖范围内", () => {
+await test("文档页都在 sidebar 覆盖范围内", () => {
   const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
   for (const file of FILES) {
     if (!file.startsWith("docs/") && !file.startsWith("tech/")) continue;
@@ -233,7 +233,7 @@ const BANNED_PHRASES = [
   "衣橱",
 ];
 
-test("文案没有防御式措辞与元表述", () => {
+await test("文案没有防御式措辞与元表述", () => {
   const offenders: string[] = [];
   for (const file of FILES) {
     const source = read(file);
@@ -244,7 +244,7 @@ test("文案没有防御式措辞与元表述", () => {
   assert.deepEqual(offenders, [], `这些地方要改成直接陈述：\n${offenders.join("\n")}`);
 });
 
-test("QQ 群号全站一致，且来自 site.ts", () => {
+await test("QQ 群号全站一致，且来自 site.ts", () => {
   const expected = SITE.community.qqGroup;
   const config = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
   assert.ok(config.includes("SITE.community.qqGroup"), "页脚应引用 site.ts 里的群号");
@@ -259,7 +259,7 @@ test("QQ 群号全站一致，且来自 site.ts", () => {
   assert.ok(found.length >= 2, `群号至少出现在关于页与隐私声明：${found.join(", ")}`);
 });
 
-test("隐私声明覆盖数据、共享、保留与删除", () => {
+await test("隐私声明覆盖数据、共享、保留与删除", () => {
   const privacy = read("privacy/index.md");
   for (const topic of ["学校邮箱", "身份日志", "全国 MUA", "保留", "删除账号", "Cookie"]) {
     assert.ok(privacy.includes(topic), `隐私声明缺少「${topic}」`);
@@ -267,7 +267,7 @@ test("隐私声明覆盖数据、共享、保留与删除", () => {
   assert.ok(privacy.includes(SITE.community.qqGroup), "隐私声明缺少联系方式");
 });
 
-test("三个名词各就各位", () => {
+await test("三个名词各就各位", () => {
   const home = read("index.md");
   assert.ok(home.includes("吉林大学 Minecraft 同好会"));
   assert.ok(!home.includes("吉林省高校 Minecraft 联合体"), "同好会不是省级联盟");

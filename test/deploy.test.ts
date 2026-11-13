@@ -14,14 +14,14 @@ const ROOT = join(import.meta.dirname, "..");
 const CONFIG = readFileSync(join(ROOT, ".vitepress", "config.ts"), "utf8");
 const WORKFLOW = readFileSync(join(ROOT, ".github", "workflows", "deploy.yml"), "utf8");
 
-test("CNAME 与站点来源的主机名一致（否则 Pages 会用旧域名发证书）", () => {
+await test("CNAME 与站点来源的主机名一致（否则 Pages 会用旧域名发证书）", () => {
   const host = new URL(SITE.origin).host;
   const cname = readFileSync(join(ROOT, "public", "CNAME"), "utf8").trim();
   assert.equal(cname, host);
   assert.equal(cname, "www.jlucraft.com");
 });
 
-test("public/ 里的 .nojekyll 会被发布（靠 include-hidden-files）", () => {
+await test("public/ 里的 .nojekyll 会被发布（靠 include-hidden-files）", () => {
   assert.equal(readFileSync(join(ROOT, "public", ".nojekyll"), "utf8").trim(), "");
   const start = WORKFLOW.indexOf("uses: actions/upload-pages-artifact@");
   const end = WORKFLOW.indexOf("- name:", start);
@@ -30,25 +30,25 @@ test("public/ 里的 .nojekyll 会被发布（靠 include-hidden-files）", () =
   assert.match(step, /include-hidden-files:\s*true/, "默认会排除点开头的文件");
 });
 
-test("站点以根路径发布，且产物落在 dist/", () => {
+await test("站点以根路径发布，且产物落在 dist/", () => {
   assert.match(CONFIG, /base:\s*["']\/["']/);
   assert.match(CONFIG, /outDir:\s*["']dist["']/);
   assert.match(CONFIG, /srcDir:\s*["']content["']/);
 });
 
-test("publicDir 指向仓库根的 public/（否则 CNAME、.nojekyll 与图标不会进 dist）", () => {
+await test("publicDir 指向仓库根的 public/（否则 CNAME、.nojekyll 与图标不会进 dist）", () => {
   assert.match(CONFIG, /vite:\s*\{\s*publicDir:\s*PUBLIC_DIR\s*\}/);
   assert.match(CONFIG, /new URL\(["']\.\.\/public["'],\s*import\.meta\.url\)/);
 });
 
-test("cleanUrls 必须关闭：GitHub Pages 不支持无扩展名路由", () => {
+await test("cleanUrls 必须关闭：GitHub Pages 不支持无扩展名路由", () => {
   assert.match(CONFIG, /cleanUrls:\s*false/);
   assert.equal(canonicalFor("docs/faq.md"), `${SITE.origin}/docs/faq.html`);
   assert.equal(canonicalFor("docs/index.md"), `${SITE.origin}/docs/`);
   assert.equal(canonicalFor("index.md"), `${SITE.origin}/`);
 });
 
-test("部署工作流上传 dist/ 并在同一次运行里部署", () => {
+await test("部署工作流上传 dist/ 并在同一次运行里部署", () => {
   assert.match(WORKFLOW, /actions\/configure-pages@v6/);
   assert.match(WORKFLOW, /actions\/upload-pages-artifact@v5/);
   assert.match(WORKFLOW, /actions\/deploy-pages@v5/);
@@ -65,7 +65,7 @@ const ACTION_FLOOR: Record<string, number> = {
   "actions/deploy-pages": 5,
 };
 
-test("工作流只用登记的 action，且版本不低于下限", () => {
+await test("工作流只用登记的 action，且版本不低于下限", () => {
   const refs = [...WORKFLOW.matchAll(/uses:\s*(\S+)/g)].map((m) => m[1]);
   assert.ok(refs.length >= 5);
   for (const ref of refs) {
@@ -80,12 +80,12 @@ test("工作流只用登记的 action，且版本不低于下限", () => {
   }
 });
 
-test("仓库里没有任何反向代理配置残留", () => {
+await test("仓库里没有任何反向代理配置残留", () => {
   const agents = readFileSync(join(ROOT, "AGENTS.md"), "utf8");
   assert.ok(!/nginx|try_files|rsync/i.test(agents), "AGENTS.md 里还有反代部署说明");
 });
 
-test("main pushes have one validation owner and deploy the checked artifact", () => {
+await test("main pushes have one validation owner and deploy the checked artifact", () => {
   const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
   assert.doesNotMatch(ci, /^  push:/m);
   assert.match(ci, /^  pull_request:/m);

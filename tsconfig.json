@@ -6,9 +6,8 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "noEmit": true,
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client", "web-bluetooth"]
   },
   "include": [".vitepress/**/*.ts", "test"],
   "exclude": ["node_modules", "dist", ".vitepress/cache"]

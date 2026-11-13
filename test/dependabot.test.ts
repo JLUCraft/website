@@ -21,7 +21,7 @@ function entries(): { ecosystem: string; directory: string }[] {
   return out;
 }
 
-test("配置能解析出条目，且覆盖 bun 与 github-actions", () => {
+await test("配置能解析出条目，且覆盖 bun 与 github-actions", () => {
   const found = entries();
   assert.ok(found.length >= 2, `只解析出 ${found.length} 条`);
   const ecosystems = found.map((entry) => entry.ecosystem);
@@ -29,7 +29,7 @@ test("配置能解析出条目，且覆盖 bun 与 github-actions", () => {
   assert.ok(ecosystems.includes("github-actions"), "缺少 github-actions 生态");
 });
 
-test("每个 directory 都真实存在对应的清单文件", () => {
+await test("每个 directory 都真实存在对应的清单文件", () => {
   const expectedManifest: Record<string, string> = {
     bun: "package.json",
     "github-actions": ".github/workflows",
@@ -40,7 +40,7 @@ test("每个 directory 都真实存在对应的清单文件", () => {
   }
 });
 
-test("只跑每周一次、限定并发 PR 数，并合并 minor/patch", () => {
+await test("只跑每周一次、限定并发 PR 数，并合并 minor/patch", () => {
   assert.match(CONFIG, /interval: "weekly"/);
   assert.match(CONFIG, /timezone: "Asia\/Shanghai"/);
   assert.match(CONFIG, /open-pull-requests-limit: \d+/);

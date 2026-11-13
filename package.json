@@ -28,5 +28,8 @@
     "typescript": "^7.0.2",
     "vitepress": "^1.6.4",
     "vue": "3.5.44"
+  },
+  "patchedDependencies": {
+    "vitepress@1.6.4": "patches/vitepress@1.6.4.patch"
   }
 }

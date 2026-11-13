@@ -17,7 +17,7 @@ function declared(css: string): Set<string> {
   return new Set([...css.matchAll(/^\s*--([a-z0-9-]+)\s*:/gm)].map((m) => m[1]));
 }
 
-test("tokens.css 是静态品牌令牌，且同时支持媒体查询与 .dark 两种深色切换", () => {
+await test("tokens.css 是静态品牌令牌，且同时支持媒体查询与 .dark 两种深色切换", () => {
   assert.match(TOKENS, /^\/\* 静态品牌令牌/);
   assert.ok(TOKENS.includes("@media (prefers-color-scheme: dark)"));
   assert.ok(TOKENS.includes(".dark {"), "VitePress 用 class 切深色，必须有 .dark 块");
@@ -26,14 +26,14 @@ test("tokens.css 是静态品牌令牌，且同时支持媒体查询与 .dark �
   }
 });
 
-test("brand.css 只做映射：零字面色值", () => {
+await test("brand.css 只做映射：零字面色值", () => {
   const literals = [...BRAND.matchAll(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)/g)].map(
     (m) => m[0],
   );
   assert.deepEqual(literals, [], `brand.css 出现字面颜色：${literals.join(", ")}`);
 });
 
-test("brand.css 不重复声明品牌令牌", () => {
+await test("brand.css 不重复声明品牌令牌", () => {
   const generated = declared(TOKENS);
   const duplicated = [...declared(BRAND)].filter(
     (name) => generated.has(name) && !name.startsWith("vp-"),
@@ -41,14 +41,14 @@ test("brand.css 不重复声明品牌令牌", () => {
   assert.deepEqual(duplicated, [], `这些令牌应由 tokens.css 提供：${duplicated.join(", ")}`);
 });
 
-test("brand.css 引用的每个令牌都有定义（生成令牌或本文件的局部变量）", () => {
+await test("brand.css 引用的每个令牌都有定义（生成令牌或本文件的局部变量）", () => {
   const defined = new Set([...declared(TOKENS), ...declared(BRAND)]);
   const used = new Set([...BRAND.matchAll(/var\(--([a-z0-9-]+)\)/g)].map((m) => m[1]));
   const missing = [...used].filter((name) => !defined.has(name));
   assert.deepEqual(missing, [], `未定义的令牌：${missing.join(", ")}`);
 });
 
-test("深色模式不写两套：brand.css 里不出现分模式的颜色覆盖", () => {
+await test("深色模式不写两套：brand.css 里不出现分模式的颜色覆盖", () => {
   assert.equal(
     /\.dark\s*\{[^}]*#[0-9a-f]/i.test(BRAND),
     false,
@@ -56,7 +56,7 @@ test("深色模式不写两套：brand.css 里不出现分模式的颜色覆盖"
   );
 });
 
-test("关键的 VitePress 变量都接到了品牌令牌", () => {
+await test("关键的 VitePress 变量都接到了品牌令牌", () => {
   for (const name of [
     "--vp-c-brand-1",
     "--vp-c-bg",
