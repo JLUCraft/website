@@ -56,7 +56,7 @@ description: 吉林大学 Minecraft 同好会：学校邮箱注册，同好会�
 
 [**启动器** 一键安装游戏，内置同好会认证与服务器列表，支持跨端登录。](https://github.com/JLUCraft/FollyLauncher/releases){ .lp-service }
 
-[**基础设施** 联邦服务器、中继与管理端支撑跨校联机、赛事与审批。](/tech/clients){ .lp-service }
+[**基础设施** 游戏网关、中继与运维支撑跨校联机、赛事与审批。](/tech/clients){ .lp-service }
 :::
 
 ::: lp services

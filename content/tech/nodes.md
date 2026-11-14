@@ -1,46 +1,52 @@
 ---
-title: 联邦服务器
-description: federated-server 单进程承担身份、目录、中继、赛事网关、成员房间与托管游戏服务端六种角色。
+title: 联合服务器
+description: union-server 是中心化游戏网关与托管主机，承担原生网关、计分、活动上报与运维监管。
 ---
 
-# 联邦服务器
+# 联合服务器
 
-`federated-server` 是一个进程承担多种角色，按配置启用：
+`union-server` 是中心化的游戏主机，一台进程按配置启用多种角色：
 
 | 角色 | 作用 |
 | --- | --- |
-| 身份 | 校验联盟身份、把游戏登录映射到身份日志 |
-| 目录 | 提供可用服务列表，供客户端发现 |
-| 中继 | 在 NAT 后的玩家与游戏服务端之间转发流量 |
-| 赛事网关 | 处理比赛期间的跨社团对局（`league_proxy`） |
-| 成员房间 | 社团成员创建的小型联机房间 |
-| 托管游戏服务端 | 管理本机 Paper 等游戏服务端的生命周期 |
+| 原生网关 | 完成 RSA 挑战校验与 AES-128-CFB8 加密登录，向皮肤站校验 `hasJoined`，再用 modern forwarding 把身份与材质转给 Paper |
+| 计分适配 | 暴露 `POST /v1/score` 等接口，把比赛服的计分结果转发给皮肤站的联赛服务 |
+| 活动上报 | 接收比赛服的活动切片，校验后把证据与积分交给皮肤站 |
+| 运维监管 | 作为独立进程监管托管实例的启停、备份、部署与命令，由皮肤站 MCP 下发授权 |
 
 ## 关键配置
 
+网关、计分与活动适配都在 `services` 下配置，至少启用一项：
+
 ```json
 {
-  "node": {
-    "domain": "identity",
-    "genesis": "identity-genesis.json",
-    "journal": "identity-journal",
-    "bootstrap": "https://<主入口地址>",
-    "reserve": ["https://<备用入口地址>"],
-    "lan_discovery": true
+  "services": {
+    "league_proxy": {
+      "config": {
+        "league": "cup",
+        "bind": "0.0.0.0:25565",
+        "skin_site": "https://skin.jlucraft.com",
+        "session_token": "host.session"
+      }
+    },
+    "scoring": {
+      "bind": "127.0.0.1:4238",
+      "skin_site": "https://skin.jlucraft.com",
+      "session_token": "host.session",
+      "token": "paper.token"
+    }
   }
 }
 ```
 
-- `domain`：该节点服务的域（`identity` / `league` / `office`）
-- `genesis` / `journal`：日志的起点与落盘位置
-- `bootstrap` / `reserve`：与外部互通时的入口地址；NAT 后同样配置
-- `lan_discovery`：开启 mDNS 局域网发现，校园网内可以不经公网找到服务器
+- `bind`：本地监听地址，计分与活动适配必须回环
+- `skin_site`：皮肤站地址，主机用其中的 Yggdrasil 会话向中心认证
+- 会话令牌与 Paper 令牌放在仓库外，权限 0600
 
 ## 启动自检
 
-启动服务前先执行 `federated-server check`，校验配置文件、日志目录、密钥与域设置是否完整一致。
+启动前先执行 `union-server check`，校验配置文件与密钥是否完整一致。
 
-## 多机部署
+## 中心化部署
 
-同好会与联盟可以有多台联邦服务器，部署在不同网络里，各自配置。
-它们只需要知道同一个皮肤站地址，彼此之间不需要互相配置皮肤站。
+同好会与联盟共用一台皮肤站与一台游戏主机。主机只认皮肤站地址，按 `league` 的分配开关网关；比赛服、备用入口与托管实例都在这一套中心下运行，不需要各自配置皮肤站。

@@ -1,6 +1,6 @@
 ---
 title: 部署与验收
-description: 皮肤站与联邦服务器的启动配置、健康检查接口与全仓库构建验证命令。
+description: 皮肤站与联合服务器的启动配置、健康检查接口与全仓库构建验证命令。
 ---
 
 # 部署与验收
@@ -9,8 +9,8 @@ description: 皮肤站与联邦服务器的启动配置、健康检查接口与�
 
 | 组件 | 仓库 | 就绪标志 |
 | --- | --- | --- |
-| 皮肤站 | [federated-skinstation](https://github.com/JLUCraft/federated-skinstation) | `GET /health/ready` 返回就绪 |
-| 联邦服务器 | [federated-server](https://github.com/JLUCraft/federated-server) | `federated-server check` 通过 |
+| 皮肤站 | [union-skinstation](https://github.com/JLUCraft/union-skinstation) | `GET /health/ready` 返回就绪 |
+| 联合服务器 | [union-server](https://github.com/JLUCraft/union-server) | `union-server check` 通过 |
 | 启动器 | [FollyLauncher](https://github.com/JLUCraft/FollyLauncher) | 登录成功，能拉取实例与材质 |
 
 ## 皮肤站
@@ -23,17 +23,17 @@ bun run start                 # 监听 127.0.0.1:8080，反代到 443
 
 一把 RSA 4096 私钥同时用于材质签名与 `id_token` 签发。更换私钥会使已下发的材质签名全部失效。
 
-## 联邦服务器
+## 联合服务器
 
-The host binary embeds the reviewed founder manifest selected by `FOUNDER_MANIFEST`. The manifest contains the approved federation, quorum, and founder public identities. Embedded library consumers receive their trust root from the caller.
+The host binary embeds the reviewed founder manifest selected by `FOUNDER_MANIFEST`. The manifest contains the approved quorum and founder public identities. Embedded library consumers receive their trust root from the caller.
 
 ```sh
 FOUNDER_MANIFEST=/absolute/path/to/reviewed-founders.json cargo build --release --locked
-federated-server check --config /etc/jlucraft/node.json
-federated-server run --config /etc/jlucraft/node.json
+union-server check --config /etc/jlucraft/node.json
+union-server run --config /etc/jlucraft/node.json
 ```
 
-节点字段见[联邦服务器](/tech/nodes)，网络形态见[网络与中继](/tech/network)。
+主机字段见[联合服务器](/tech/nodes)，网络形态见[网络与中继](/tech/network)。
 
 ## 验收
 
@@ -52,7 +52,7 @@ Set `FOUNDER_MANIFEST` when checking the host binary. Isolated host tests use `t
 | 仓库 | 命令 |
 | --- | --- |
 | union-core | `python3 scripts/check-layers.py && cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings && cargo test --locked` |
-| federated-server | `cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings && cargo test --locked` |
-| federated-skinstation | `bun run build && bun run test` |
+| union-server | `cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings && cargo test --locked` |
+| union-skinstation | `bun run build && bun run test` |
 | FollyLauncher | `eslint src --max-warnings=0 && tsc --noEmit && node scripts/locale/index.js diff en` |
 | jlucraft-web | `bun run build && bun run test` |

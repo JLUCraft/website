@@ -5,7 +5,7 @@ description: 皮肤站负责账号、Yggdrasil 认证、材质签名与皮肤库
 
 # 皮肤站
 
-`federated-skinstation` 是一个 Fastify 服务，前端在 `/portal/`，接口在站点根路径。
+`union-skinstation` 是一个 Fastify 服务，前端在 `/portal/`，接口在站点根路径。
 
 ## 职责
 
@@ -29,7 +29,7 @@ description: 皮肤站负责账号、Yggdrasil 认证、材质签名与皮肤库
 
 ## 材质统一签名
 
-材质属性由皮肤站用同一把私钥签名，各校联邦服务器原样转发给游戏客户端，共用同一条签名校验链。
+材质属性由皮肤站用同一把私钥签名，游戏网关原样转发给游戏客户端，共用同一条签名校验链。
 
 ## 运维要点
 
