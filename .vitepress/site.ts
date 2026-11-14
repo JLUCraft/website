@@ -14,8 +14,8 @@ export const SITE = {
   launcher: "https://github.com/JLUCraft/FollyLauncher/releases",
   repositories: {
     launcher: "https://github.com/JLUCraft/FollyLauncher",
-    "skin-station": "https://github.com/JLUCraft/federated-skinstation",
-    "federated-server": "https://github.com/JLUCraft/federated-server",
+    "skin-station": "https://github.com/JLUCraft/union-skinstation",
+    "union-server": "https://github.com/JLUCraft/union-server",
     "union-core": "https://github.com/JLUCraft/union-core",
     minecraftd: "https://github.com/JLUCraft/minecraftd",
     "paper-scoring": "https://github.com/JLUCraft/paper-scoring-template",

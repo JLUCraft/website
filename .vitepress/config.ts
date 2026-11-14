@@ -71,7 +71,7 @@ const TECH_SIDEBAR = [
       { text: "总体架构", link: "/tech/" },
       { text: "身份与设备", link: "/tech/identity" },
       { text: "协议与编码", link: "/tech/protocol" },
-      { text: "联邦服务器", link: "/tech/nodes" },
+      { text: "联合服务器", link: "/tech/nodes" },
       { text: "网络与中继", link: "/tech/network" },
     ],
   },
