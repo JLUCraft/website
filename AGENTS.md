@@ -96,8 +96,7 @@ data as `unknown` until it is narrowed. `build` runs the same check in CI.
   目录首页（`/`、`/docs/`、`/jlmua/`）不受影响。
 - Pages 三个 action 用当前最新 major：`configure-pages@v6`、`upload-pages-artifact@v5`、
   `deploy-pages@v5`，`test/deploy.test.ts` 里登记了版本下限。
-- Cloudflare DNS and certificate steps are in the machine-local workspace `../TODO.md`, under "Website deployment"; that file is not part of this repository.
 
 ## Documentation ownership
 
-Keep project documentation in the root `AGENTS.md` and `README.md` only. Product content and required license files retain their existing locations. Workspace progress and evidence belong in `../TODO.md`; unresolved issues belong in `../PROBLEMS.md`. These workspace records are machine-local and are not published.
+Keep project documentation in the root `AGENTS.md` and `README.md` only. Product content and required license files retain their existing locations.
