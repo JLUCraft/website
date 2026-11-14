@@ -14,9 +14,7 @@ description: 同好会与联盟共用的中心化基础设施分层、核心仓�
 | 客户端 | [FollyLauncher](https://github.com/JLUCraft/FollyLauncher) | 玩家入口：登录、材质、实例管理、本地回环代理 |
 | 插件 | [paper-scoring-template](https://github.com/JLUCraft/paper-scoring-template) | 比赛服上的计分上报插件 |
 
-`union-core` 仍是独立维护的联合协议库，不在这些产品的运行时内。
-
-Management uses agents and MCP. The Android management app is retired; its repository remains for migration reference.
+Management uses agents and MCP.
 
 ## 术语
 

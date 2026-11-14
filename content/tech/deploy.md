@@ -51,7 +51,6 @@ Set `FOUNDER_MANIFEST` when checking the host binary. Isolated host tests use `t
 
 | 仓库 | 命令 |
 | --- | --- |
-| union-core | `python3 scripts/check-layers.py && cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings && cargo test --locked` |
 | union-server | `cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings && cargo test --locked` |
 | union-skinstation | `bun run build && bun run test` |
 | FollyLauncher | `eslint src --max-warnings=0 && tsc --noEmit && node scripts/locale/index.js diff en` |

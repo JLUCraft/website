@@ -18,8 +18,6 @@ description: 启动器是玩家入口，管理面改由 agent + MCP，Android �
 
 Management uses agents and MCP. 管理员 agent 通过皮肤站 OAuth 认证，MCP 网关转发已授权的请求；中心权限与逐调用审计负责授权。
 
-The Android `union-manager` app is retired. Its directory and Git history remain for migration reference.
-
 ## 登录与授权校验
 
 启动器用设备码流程向皮肤站换取令牌，通行密钥可在浏览器侧登录。每次请求带皮肤站签发的令牌，服务端校验令牌的签名、时效、受众与撤销状态，并核对社团成员，拒绝无令牌或仅靠字段自报的请求。
